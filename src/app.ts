@@ -26,12 +26,17 @@ export default class App {
   }
 
   request(options: RequestOptions): Promise<IncomingMessage> {
-    options = this.scopeRequestOptions(options);
+    options = this.scopeRequestOptions("apps", options);
     return this.client.request(options);
   }
 
-  private scopeRequestOptions(options: RequestOptions): RequestOptions {
-    let path = `/apps/${this.appID}/${options.path}`
+  configRequest(options: RequestOptions): Promise<IncomingMessage> {
+    options = this.scopeRequestOptions("config/apps", options);
+    return this.client.request(options);
+  }
+
+  private scopeRequestOptions(prefix: string, options: RequestOptions): RequestOptions {
+    let path = `/${prefix}/${this.appID}/${options.path}`
       .replace(/\/+/g, "/")
       .replace(/\/+$/, "");
     return extend(
