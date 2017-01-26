@@ -20,3 +20,7 @@ export interface RequestOptions {
   headers?: Headers;
   body?: Readable;
 }
+
+export interface AuthenticateOptions {
+  userID: string;
+}
