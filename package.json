@@ -2,9 +2,11 @@
   "name": "pusher-platform-nodejs",
   "version": "0.0.1",
   "dependencies": {
-    "extend": "^2.0.0",
     "@types/es6-promise": "0.0.32",
-    "@types/extend": "^2.0.30"
+    "@types/extend": "^2.0.30",
+    "@types/jsonwebtoken": "^7.2.0",
+    "extend": "^2.0.0",
+    "jsonwebtoken": "^7.2.1"
   },
   "devDependencies": {
     "typescript": "^2.1.0"
