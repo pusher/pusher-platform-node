@@ -19,10 +19,10 @@ export default class Authenticator {
     let grantType = body["grant_type"];
 
     if (grantType === "client_credentials") {
-      this.authenticateWithClientCredentials(response);
+      this.authenticateWithClientCredentials(response, options);
     } else if (grantType === "refresh_token") {
       let oldRefreshToken = body["refresh_token"];
-      this.authenticateWithRefreshToken(oldRefreshToken, response);
+      this.authenticateWithRefreshToken(oldRefreshToken, response, options);
     } else {
       writeResponse(response, 401, {
         error: "unsupported_grant_type",
@@ -31,9 +31,9 @@ export default class Authenticator {
     }
   }
 
-  private authenticateWithClientCredentials(response: ServerResponse) {
-    let accessToken = this.generateAccessToken();
-    let refreshToken = this.generateRefreshToken();
+  private authenticateWithClientCredentials(response: ServerResponse, options: AuthenticateOptions) {
+    let accessToken = this.generateAccessToken(options);
+    let refreshToken = this.generateRefreshToken(options);
     writeResponse(response, 200, {
       access_token: accessToken,
       token_type: "bearer",
@@ -42,7 +42,7 @@ export default class Authenticator {
     });
   }
 
-  private authenticateWithRefreshToken(oldRefreshToken: string, response: ServerResponse) {
+  private authenticateWithRefreshToken(oldRefreshToken: string, response: ServerResponse, options: AuthenticateOptions) {
     let decoded: any;
 
     try {
@@ -74,10 +74,17 @@ export default class Authenticator {
       return;
     }
 
-    // TODO check sub
+    if (options.userID !== decoded.sub) {
+      writeResponse(response, 401, {
+        error: "invalid_grant",
+        error_description: "refresh token has an invalid user id",
+        // TODO error_uri
+      });
+      return;
+    }
 
-    let newAccessToken = this.generateAccessToken();
-    let newRefreshToken = this.generateRefreshToken();
+    let newAccessToken = this.generateAccessToken(options);
+    let newRefreshToken = this.generateRefreshToken(options);
     writeResponse(response, 200, {
       access_token: newAccessToken,
       token_type: "bearer",
@@ -86,7 +93,7 @@ export default class Authenticator {
     });
   }
 
-  private generateAccessToken(): string {
+  private generateAccessToken(options: AuthenticateOptions): string {
     let now = Math.floor(Date.now() / 1000);
 
     let claims = {
@@ -94,13 +101,13 @@ export default class Authenticator {
       iss: `keys/${this.appKeyID}`,
       iat: now - TOKEN_LEEWAY,
       exp: now + TOKEN_EXPIRY - TOKEN_LEEWAY,
-      // TODO sub
+      sub: options.userID,
     };
 
     return jwt.sign(claims, this.appKeySecret);
   }
 
-  private generateRefreshToken(): string {
+  private generateRefreshToken(options: AuthenticateOptions): string {
     let now = Math.floor(Date.now() / 1000);
 
     let claims = {
@@ -108,7 +115,7 @@ export default class Authenticator {
       iss: `keys/${this.appKeyID}`,
       iat: now - TOKEN_LEEWAY,
       refresh: true,
-      // TODO sub
+      sub: options.userID,
     };
 
     return jwt.sign(claims, this.appKeySecret);
