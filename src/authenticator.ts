@@ -98,7 +98,7 @@ export default class Authenticator {
 
     let claims = {
       app: this.appID,
-      iss: `keys/${this.appKeyID}`,
+      iss: this.appKeyID,
       iat: now - TOKEN_LEEWAY,
       exp: now + TOKEN_EXPIRY + TOKEN_LEEWAY,
       sub: options.userID,
@@ -112,7 +112,7 @@ export default class Authenticator {
 
     let claims = {
       app: this.appID,
-      iss: `keys/${this.appKeyID}`,
+      iss: this.appKeyID,
       iat: now - TOKEN_LEEWAY,
       refresh: true,
       sub: options.userID,

@@ -74,7 +74,7 @@ export default class App {
     let now = Math.floor(Date.now() / 1000);
     var claims = {
       app: this.appID,
-      iss: `keys/${this.appKeyID}`,
+      iss: this.appKeyID,
       su: true,
       iat: now - 30,   // some leeway for the server
       exp: now + 60*5, // 5 minutes should be enough for a single request
