@@ -100,7 +100,7 @@ export default class Authenticator {
       app: this.appID,
       iss: `keys/${this.appKeyID}`,
       iat: now - TOKEN_LEEWAY,
-      exp: now + TOKEN_EXPIRY - TOKEN_LEEWAY,
+      exp: now + TOKEN_EXPIRY + TOKEN_LEEWAY,
       sub: options.userID,
     };
 
