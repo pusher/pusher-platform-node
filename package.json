@@ -1,6 +1,6 @@
 {
   "name": "pusher-platform",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "dependencies": {
@@ -17,7 +17,7 @@
     "prepublish": "tsc"
   },
   "author": "Pusher <support@pusher.com>",
-  "description": "Node.js Pusher Platform SDK",
+  "description": "Pusher Platform Node.js SDK",
   "license": "MIT",
   "repository": "git://github.com/pusher/pusher-platform-nodejs"
 }
