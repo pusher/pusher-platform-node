@@ -19,5 +19,5 @@
   "author": "Pusher <support@pusher.com>",
   "description": "Node.js Pusher Platform SDK",
   "license": "MIT",
-  "repository": "git://github.com/pusher/pusher-platform-nodejs",
+  "repository": "git://github.com/pusher/pusher-platform-nodejs"
 }
