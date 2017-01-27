@@ -1,9 +1,10 @@
 import extend = require("extend");
-import {IncomingMessage} from "http";
+import {IncomingMessage, ServerResponse} from "http";
 import * as jwt from "jsonwebtoken";
 
+import Authenticator from "./authenticator";
 import BaseClient from "./base_client";
-import {RequestOptions} from "./common";
+import {AuthenticateOptions, RequestOptions} from "./common";
 
 export interface Options {
   cluster: string;
@@ -18,6 +19,8 @@ export default class App {
   private appKeyID: string;
   private appKeySecret: string;
 
+  private authenticator: Authenticator;
+
   constructor(options: Options) {
     this.appID = options.appID;
 
@@ -31,6 +34,10 @@ export default class App {
     this.client = options.client || new BaseClient({
       host: options.cluster,
     });
+
+    this.authenticator = new Authenticator(
+      this.appID, this.appKeyID, this.appKeySecret
+    );
   }
 
   request(options: RequestOptions): Promise<IncomingMessage> {
@@ -47,6 +54,10 @@ export default class App {
       options = extend(options, { jwt: this.generateSuperuserJWT() });
     }
     return this.client.request(options);
+  }
+
+  authenticate(request: IncomingMessage, response: ServerResponse, options: AuthenticateOptions) {
+    this.authenticator.authenticate(request, response, options);
   }
 
   private scopeRequestOptions(prefix: string, options: RequestOptions): RequestOptions {
