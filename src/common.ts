@@ -8,7 +8,7 @@ export class ErrorResponse {
   constructor(
     public readonly statusCode: number,
     public readonly headers: Headers,
-    public readonly info: any) {
+    public readonly description: any) {
 
   }
 }

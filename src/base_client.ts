@@ -50,9 +50,9 @@ export default class BaseClient {
         } else if (statusCode >= 300 && statusCode <= 399) {
           reject(new Error(`Unsupported Redirect Response: ${statusCode}`));
         } else if (statusCode >= 400 && statusCode <= 599) {
-          readJSON(response).then(function(errorInfo) {
+          readJSON(response).then(function(errorDescription) {
             reject(
-              new ErrorResponse(statusCode, response.headers, errorInfo)
+              new ErrorResponse(statusCode, response.headers, errorDescription)
             );
           }).catch(function(error) {
             // FIXME we should probably return raw body
