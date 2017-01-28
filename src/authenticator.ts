@@ -8,8 +8,8 @@ const TOKEN_EXPIRY = 24*60*60;
 
 export default class Authenticator {
   constructor(
-      private appID: string,
-      private appKeyID: string,
+      private appId: string,
+      private appKeyId: string,
       private appKeySecret: string) {
 
   }
@@ -47,7 +47,7 @@ export default class Authenticator {
 
     try {
       decoded = jwt.verify(oldRefreshToken, this.appKeySecret, {
-        issuer: `keys/${this.appKeyID}`,
+        issuer: `keys/${this.appKeyId}`,
         clockTolerance: TOKEN_LEEWAY,
       });
     } catch (e) {
@@ -74,7 +74,7 @@ export default class Authenticator {
       return;
     }
 
-    if (options.userID !== decoded.sub) {
+    if (options.userId !== decoded.sub) {
       writeResponse(response, 401, {
         error: "invalid_grant",
         error_description: "refresh token has an invalid user id",
@@ -97,11 +97,11 @@ export default class Authenticator {
     let now = Math.floor(Date.now() / 1000);
 
     let claims = {
-      app: this.appID,
-      iss: this.appKeyID,
+      app: this.appId,
+      iss: this.appKeyId,
       iat: now - TOKEN_LEEWAY,
-      exp: now + TOKEN_EXPIRY + TOKEN_LEEWAY,
-      sub: options.userID,
+      exp: now + TOKEN_EXPIRY - TOKEN_LEEWAY,
+      sub: options.userId,
     };
 
     return jwt.sign(claims, this.appKeySecret);
@@ -111,11 +111,11 @@ export default class Authenticator {
     let now = Math.floor(Date.now() / 1000);
 
     let claims = {
-      app: this.appID,
-      iss: this.appKeyID,
+      app: this.appId,
+      iss: this.appKeyId,
       iat: now - TOKEN_LEEWAY,
       refresh: true,
-      sub: options.userID,
+      sub: options.userId,
     };
 
     return jwt.sign(claims, this.appKeySecret);

@@ -22,5 +22,5 @@ export interface RequestOptions {
 }
 
 export interface AuthenticateOptions {
-  userID: string;
+  userId: string;
 }

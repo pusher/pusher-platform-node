@@ -8,27 +8,27 @@ import {AuthenticateOptions, RequestOptions} from "./common";
 
 export interface Options {
   cluster: string;
-  appID: string;
+  appId: string;
   appKey: string;
   client?: BaseClient;
 }
 
 export default class App {
   private client: BaseClient;
-  private appID: string;
-  private appKeyID: string;
+  private appId: string;
+  private appKeyId: string;
   private appKeySecret: string;
 
   private authenticator: Authenticator;
 
   constructor(options: Options) {
-    this.appID = options.appID;
+    this.appId = options.appId;
 
     let keyParts = options.appKey.match(/^([^:]+):(.+)$/);
     if (!keyParts) {
       throw new Error("Invalid app key");
     }
-    this.appKeyID = keyParts[1];
+    this.appKeyId = keyParts[1];
     this.appKeySecret = keyParts[2];
 
     this.client = options.client || new BaseClient({
@@ -36,7 +36,7 @@ export default class App {
     });
 
     this.authenticator = new Authenticator(
-      this.appID, this.appKeyID, this.appKeySecret
+      this.appId, this.appKeyId, this.appKeySecret
     );
   }
 
@@ -61,7 +61,7 @@ export default class App {
   }
 
   private scopeRequestOptions(prefix: string, options: RequestOptions): RequestOptions {
-    let path = `/${prefix}/${this.appID}/${options.path}`
+    let path = `/${prefix}/${this.appId}/${options.path}`
       .replace(/\/+/g, "/")
       .replace(/\/+$/, "");
     return extend(
@@ -73,8 +73,8 @@ export default class App {
   private generateSuperuserJWT() {
     let now = Math.floor(Date.now() / 1000);
     var claims = {
-      app: this.appID,
-      iss: this.appKeyID,
+      app: this.appId,
+      iss: this.appKeyId,
       su: true,
       iat: now - 30,   // some leeway for the server
       exp: now + 60*5, // 5 minutes should be enough for a single request
