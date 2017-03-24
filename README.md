@@ -16,15 +16,21 @@ Add `pusher-platform` to your package.json file:
 
 ## Usage
 
-In order to access Pusher Platform, first instantiate an App object:
+In order to access Pusher Platform, first instantiate an `App` object:
 
 ```js
 var pusher = require("pusher-platform");
 
+// if auth is turned off for your app, this is all you need
+var pusherApp = new pusher.App({ appId: "YOUR_APP_ID_HERE" });
+
+// if auth is turned on, provide your app key
 var pusherApp = new pusher.App({
-  cluster: "",
-  app_id: "",
-  app_key: "",
+  appId: "YOUR_APP_ID_HERE",
+  authenticator: pusher.Authenticator.fromAppKey(
+    "YOUR_APP_ID_HERE",
+    "YOUR_APP_KEY_HERE"
+  )
 });
 ```
 
@@ -82,3 +88,19 @@ pusher.config_request({
   path: "keys",
 });
 ```
+
+## Feeds
+
+This library provides helpers to interact with the Feeds service. First, get a `Feed` object representing one of your feeds:
+
+```js
+var donutsFeed = pusherApp.feed("donuts");
+```
+
+Currently, this library only supports publishing to a feed. (Subscriptions and history queries will be supported later.) To publish an item to your feed, run:
+
+```
+donutsFeed.publish("3 donuts for $1");
+```
+
+The `publish` method accepts any JSON-stringifiable value. Subscribers will receive the same value as the body of the published item.

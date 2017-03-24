@@ -7,6 +7,17 @@ const TOKEN_LEEWAY = 30;
 const TOKEN_EXPIRY = 24*60*60;
 
 export default class Authenticator {
+
+  static fromAppKey(appId: string, appKey: string): Authenticator {
+    let keyParts = appKey.match(/^([^:]+):(.+)$/);
+    if (!keyParts) {
+      throw new Error("Invalid app key");
+    }
+    let appKeyId = keyParts[1];
+    let appKeySecret = keyParts[2];
+    return new Authenticator(appId, appKeyId, appKeySecret);
+  }
+
   constructor(
       private appId: string,
       private appKeyId: string,
@@ -118,6 +129,18 @@ export default class Authenticator {
       sub: options.userId,
     };
 
+    return jwt.sign(claims, this.appKeySecret);
+  }
+
+  generateSuperuserJWT(): string {
+    let now = Math.floor(Date.now() / 1000);
+    let claims = {
+      app: this.appId,
+      iss: this.appKeyId,
+      su: true,
+      iat: now - 30,   // some leeway for the server
+      exp: now + 60*5, // 5 minutes should be enough for a single request
+    };
     return jwt.sign(claims, this.appKeySecret);
   }
 }
