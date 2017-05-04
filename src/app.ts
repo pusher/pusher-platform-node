@@ -6,6 +6,8 @@ import Authenticator from "./authenticator";
 import BaseClient from "./base_client";
 import {AuthenticateOptions, RequestOptions} from "./common";
 
+import Permissions from "./permissions"
+
 export interface Options {
   cluster: string;
   appId: string;
@@ -21,6 +23,8 @@ export default class App {
 
   private authenticator: Authenticator;
 
+  public permissions: Permissions;
+
   constructor(options: Options) {
     this.appId = options.appId;
 
@@ -32,12 +36,14 @@ export default class App {
     this.appKeySecret = keyParts[2];
 
     this.client = options.client || new BaseClient({
-      host: options.cluster,
+      host: options.cluster || "api.private-beta-1.pusherplatform.com",
     });
 
     this.authenticator = new Authenticator(
       this.appId, this.appKeyId, this.appKeySecret
     );
+
+    this.permissions = new Permissions(this);
   }
 
   request(options: RequestOptions): Promise<IncomingMessage> {
