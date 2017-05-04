@@ -23,8 +23,8 @@ var pusher = require("pusher-platform");
 
 var pusherApp = new pusher.App({
   cluster: "",
-  app_id: "",
-  app_key: "",
+  appId: "",
+  appKey: "",
 });
 ```
 
