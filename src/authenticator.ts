@@ -102,6 +102,7 @@ export default class Authenticator {
       iat: now - TOKEN_LEEWAY,
       exp: now + TOKEN_EXPIRY - TOKEN_LEEWAY,
       sub: options.userId,
+      ...options.serviceClaims,
     };
 
     return jwt.sign(claims, this.appKeySecret);

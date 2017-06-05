@@ -23,4 +23,5 @@ export interface RequestOptions {
 
 export interface AuthenticateOptions {
   userId: string;
+  serviceClaims: any;
 }
