@@ -6,6 +6,11 @@ import {AuthenticateOptions} from "./common";
 const TOKEN_LEEWAY = 30;
 const TOKEN_EXPIRY = 24*60*60;
 
+export interface TokenWithExpire {
+  token: string;
+  expire: number;
+}
+
 export default class Authenticator {
   constructor(
       private appId: string,
@@ -32,10 +37,10 @@ export default class Authenticator {
   }
 
   private authenticateWithClientCredentials(response: ServerResponse, options: AuthenticateOptions) {
-    let accessToken = this.generateAccessToken(options);
+    let {token} = this.generateAccessToken(options);
     let refreshToken = this.generateRefreshToken(options);
     writeResponse(response, 200, {
-      access_token: accessToken,
+      access_token: token,
       token_type: "bearer",
       expires_in: TOKEN_EXPIRY,
       refresh_token: refreshToken,
@@ -93,19 +98,23 @@ export default class Authenticator {
     });
   }
 
-  private generateAccessToken(options: AuthenticateOptions): string {
+  generateAccessToken(options: AuthenticateOptions): TokenWithExpire {
     let now = Math.floor(Date.now() / 1000);
+    let expire = now + TOKEN_EXPIRY - TOKEN_LEEWAY;
 
     let claims = {
       app: this.appId,
       iss: this.appKeyId,
       iat: now - TOKEN_LEEWAY,
-      exp: now + TOKEN_EXPIRY - TOKEN_LEEWAY,
+      exp: expire,
       sub: options.userId,
       ...options.serviceClaims,
     };
 
-    return jwt.sign(claims, this.appKeySecret);
+    return {
+      token: jwt.sign(claims, this.appKeySecret),
+      expire: expire,
+    };
   }
 
   private generateRefreshToken(options: AuthenticateOptions): string {
