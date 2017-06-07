@@ -11,6 +11,10 @@ export interface TokenWithExpire {
   expire: number;
 }
 
+export interface RefreshToken {
+  value: string;
+}
+
 export default class Authenticator {
   constructor(
       private appId: string,
@@ -43,7 +47,7 @@ export default class Authenticator {
       access_token: token,
       token_type: "bearer",
       expires_in: TOKEN_EXPIRY,
-      refresh_token: refreshToken,
+      refresh_token: refreshToken.value,
     });
   }
 
@@ -94,7 +98,7 @@ export default class Authenticator {
       access_token: newAccessToken,
       token_type: "bearer",
       expires_in: TOKEN_EXPIRY,
-      refresh_token: newRefreshToken,
+      refresh_token: newRefreshToken.value,
     });
   }
 
@@ -117,7 +121,7 @@ export default class Authenticator {
     };
   }
 
-  private generateRefreshToken(options: AuthenticateOptions): string {
+  private generateRefreshToken(options: AuthenticateOptions): RefreshToken {
     let now = Math.floor(Date.now() / 1000);
 
     let claims = {
@@ -128,7 +132,9 @@ export default class Authenticator {
       sub: options.userId,
     };
 
-    return jwt.sign(claims, this.appKeySecret);
+    return {
+      value: jwt.sign(claims, this.appKeySecret),
+    };
   }
 }
 
