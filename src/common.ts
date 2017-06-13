@@ -1,4 +1,5 @@
 import {Readable} from "stream";
+import {IncomingMessage} from "http";
 
 export type Headers = {
   [key: string]: string | string[];
@@ -11,6 +12,10 @@ export class ErrorResponse {
     public readonly description: any) {
 
   }
+}
+
+export interface IncomingMessageWithBody extends IncomingMessage {
+  body: any;
 }
 
 export interface RequestOptions {

@@ -10,7 +10,12 @@ var pusher = new PusherApp({
 var app = express();
 
 app.post('/', bodyParser.urlencoded(), function (req, res) {
-  pusher.authenticate(req, res, {});
+  try {
+    const data = pusher.authenticate(req, {})
+    res.send(data);
+  } catch (err) {
+    res.send('AuthError: ' + err.message);
+  }
 });
 
 app.listen(3000, function () {
