@@ -1,7 +1,7 @@
 import {Readable} from "stream";
 
 export type Headers = {
-  [key: string]: string;
+  [key: string]: string | string[];
 };
 
 export class ErrorResponse {
