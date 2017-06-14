@@ -6,13 +6,13 @@ import {AuthenticateOptions} from "./common";
 const TOKEN_LEEWAY = 30;
 const TOKEN_EXPIRY = 24*60*60;
 
-export interface TokenWithExpire {
+export interface TokenWithExpiry {
   token: string;
-  expire: number;
+  expires_in: number;
 }
 
 export interface RefreshToken {
-  value: string;
+  token: string;
 }
 
 export default class Authenticator {
@@ -47,7 +47,7 @@ export default class Authenticator {
       access_token: token,
       token_type: "bearer",
       expires_in: TOKEN_EXPIRY,
-      refresh_token: refreshToken.value,
+      refresh_token: refreshToken.token,
     });
   }
 
@@ -98,26 +98,25 @@ export default class Authenticator {
       access_token: newAccessToken,
       token_type: "bearer",
       expires_in: TOKEN_EXPIRY,
-      refresh_token: newRefreshToken.value,
+      refresh_token: newRefreshToken.token,
     });
   }
 
-  generateAccessToken(options: AuthenticateOptions): TokenWithExpire {
+  generateAccessToken(options: AuthenticateOptions): TokenWithExpiry {
     let now = Math.floor(Date.now() / 1000);
-    let expire = now + TOKEN_EXPIRY - TOKEN_LEEWAY;
 
     let claims = {
       app: this.appId,
       iss: this.appKeyId,
       iat: now - TOKEN_LEEWAY,
-      exp: expire,
+      exp: now + TOKEN_EXPIRY - TOKEN_LEEWAY,
       sub: options.userId,
       ...options.serviceClaims,
     };
 
     return {
       token: jwt.sign(claims, this.appKeySecret),
-      expire: expire,
+      expires_in: TOKEN_EXPIRY,
     };
   }
 
@@ -133,7 +132,7 @@ export default class Authenticator {
     };
 
     return {
-      value: jwt.sign(claims, this.appKeySecret),
+      token: jwt.sign(claims, this.appKeySecret),
     };
   }
 }
