@@ -1,4 +1,5 @@
 import extend = require("extend");
+import {IncomingMessage} from "http";
 import {IncomingMessageWithBody} from "./common";
 import * as jwt from "jsonwebtoken";
 
@@ -42,7 +43,7 @@ export default class App {
     );
   }
 
-  request(options: RequestOptions): Promise<IncomingMessageWithBody> {
+  request(options: RequestOptions): Promise<IncomingMessage> {
     options = this.scopeRequestOptions("apps", options);
     if (options.jwt == null) {
       options = extend(options, { jwt: this.generateSuperuserJWT() });
@@ -50,7 +51,7 @@ export default class App {
     return this.client.request(options);
   }
 
-  configRequest(options: RequestOptions): Promise<IncomingMessageWithBody> {
+  configRequest(options: RequestOptions): Promise<IncomingMessage> {
     options = this.scopeRequestOptions("config/apps", options);
     if (options.jwt == null) {
       options = extend(options, { jwt: this.generateSuperuserJWT() });
