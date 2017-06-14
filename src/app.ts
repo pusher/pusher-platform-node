@@ -1,5 +1,5 @@
 import extend = require("extend");
-import {IncomingMessage} from "http";
+import {IncomingMessageWithBody} from "./common";
 import * as jwt from "jsonwebtoken";
 
 import Authenticator, {TokenWithExpire, AuthenticationResponse} from "./authenticator";
@@ -12,6 +12,8 @@ export interface Options {
   appKey: string;
   client?: BaseClient;
 }
+
+
 
 export default class App {
   private client: BaseClient;
@@ -40,7 +42,7 @@ export default class App {
     );
   }
 
-  request(options: RequestOptions): Promise<IncomingMessage> {
+  request(options: RequestOptions): Promise<IncomingMessageWithBody> {
     options = this.scopeRequestOptions("apps", options);
     if (options.jwt == null) {
       options = extend(options, { jwt: this.generateSuperuserJWT() });
@@ -48,7 +50,7 @@ export default class App {
     return this.client.request(options);
   }
 
-  configRequest(options: RequestOptions): Promise<IncomingMessage> {
+  configRequest(options: RequestOptions): Promise<IncomingMessageWithBody> {
     options = this.scopeRequestOptions("config/apps", options);
     if (options.jwt == null) {
       options = extend(options, { jwt: this.generateSuperuserJWT() });
@@ -56,7 +58,7 @@ export default class App {
     return this.client.request(options);
   }
 
-  authenticate(request: IncomingMessage, options: AuthenticateOptions): Promise<AuthenticationResponse> {
+  authenticate(request: IncomingMessageWithBody, options: AuthenticateOptions): AuthenticationResponse {
     return this.authenticator.authenticate(request, options);
   }
 

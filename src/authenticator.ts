@@ -1,7 +1,8 @@
 import {IncomingMessage} from "http";
 import * as jwt from "jsonwebtoken";
 
-import {AuthenticateOptions} from "./common";
+import {AuthenticateOptions, IncomingMessageWithBody} from "./common";
+import {UnsupportedGrantTypeError, InvalidGrantTypeError} from "./errors";
 
 const TOKEN_LEEWAY = 30;
 const TOKEN_EXPIRY = 24*60*60;
@@ -19,7 +20,7 @@ export interface RefreshToken {
 }
 
 export interface AuthenticationResponse {
-  access_token: string;
+  access_token: string | TokenWithExpire;
   token_type: string;
   expires_in: number;
   refresh_token: string;
@@ -33,10 +34,10 @@ export default class Authenticator {
 
   }
 
-  authenticate(request: IncomingMessage, options: AuthenticateOptions): Promise<AuthenticationResponse> {
-    let body = (<any>request).body; // FIXME
+  authenticate(request: IncomingMessageWithBody, options: AuthenticateOptions): AuthenticationResponse {
+    let body = request.body; // FIXME - we should figure out better way then just rely on express.js body parser.
     let grantType = body["grant_type"];
-    
+
     switch (grantType) {
       case CLIENT_CREDENTIALS_GRANT_TYPE:
         return this.authenticateWithClientCredentials(options);
@@ -44,26 +45,23 @@ export default class Authenticator {
         let oldRefreshToken = body[REFRESH_TOKEN_GRANT_TYPE];
         return this.authenticateWithRefreshToken(oldRefreshToken, options);
       default:
-        throw new Error('unsupported_grant_type ' + 401);
+        throw new UnsupportedGrantTypeError(`Requested type: "${grantType}" is not supported`);
     }
   }
 
-  private authenticateWithClientCredentials(options: AuthenticateOptions): Promise<AuthenticationResponse> {
-    return new Promise((resolve, reject) => {
-      let {token} = this.generateAccessToken(options);
-      let refreshToken = this.generateRefreshToken(options);
-      
-      resolve({
-        access_token: token,
-        token_type: "bearer",
-        expires_in: TOKEN_EXPIRY,
-        refresh_token: refreshToken.value,
-      });
-    });
+  private authenticateWithClientCredentials(options: AuthenticateOptions): AuthenticationResponse { 
+    let {token} = this.generateAccessToken(options);
+    let refreshToken = this.generateRefreshToken(options);
+    
+    return {
+      access_token: token,
+      token_type: "bearer",
+      expires_in: TOKEN_EXPIRY,
+      refresh_token: refreshToken.value,
+    };
   }
 
-  private authenticateWithRefreshToken(oldRefreshToken: string, options: AuthenticateOptions): Promise<AuthenticationResponse> {
-    return new Promise((resolve, reject) => {
+  private authenticateWithRefreshToken(oldRefreshToken: string, options: AuthenticateOptions): AuthenticationResponse {
       let decoded: any;
 
       try {
@@ -72,36 +70,27 @@ export default class Authenticator {
           clockTolerance: TOKEN_LEEWAY,
         });
       } catch (e) {
-        let description: string;
-        if (e instanceof jwt.TokenExpiredError) {
-          description = "refresh token has expired";
-        } else {
-          description = "refresh token is invalid";
-        }
-        reject(new Error("invalid_grant "+ description + "  " + 401));
-        return;
+        let description: string = (e instanceof jwt.TokenExpiredError) ? "refresh token has expired" : "refresh token is invalid";
+        throw new InvalidGrantTypeError(description);
       }
 
       if (decoded.refresh !== true) {
-        reject(new Error("invalid_grant " + "refresh token does not have a refresh claim " + 401));
-        return;
+        throw new InvalidGrantTypeError("refresh token does not have a refresh claim");
       }
 
       if (options.userId !== decoded.sub) {
-        reject(new Error("invalid_grant " + "refresh token has an invalid user id " + 401));
-        return;
+        throw new InvalidGrantTypeError("refresh token has an invalid user id");
       }
 
       let newAccessToken = this.generateAccessToken(options);
       let newRefreshToken = this.generateRefreshToken(options);
-      resolve({
+
+      return {
         access_token: newAccessToken,
         token_type: "bearer",
         expires_in: TOKEN_EXPIRY,
         refresh_token: newRefreshToken.value,
-      });
-    })
-
+      };
   }
 
   generateAccessToken(options: AuthenticateOptions): TokenWithExpire {
