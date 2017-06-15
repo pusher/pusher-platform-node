@@ -56,7 +56,7 @@ export default class Authenticator {
 
     try {
       decoded = jwt.verify(oldRefreshToken, this.appKeySecret, {
-        issuer: `keys/${this.appKeyId}`,
+        issuer: `api_keys/${this.appKeyId}`,
         clockTolerance: TOKEN_LEEWAY,
       });
     } catch (e) {
@@ -107,7 +107,7 @@ export default class Authenticator {
 
     let claims = {
       app: this.appId,
-      iss: this.appKeyId,
+      iss: `api_keys/${this.appKeyId}`,
       iat: now - TOKEN_LEEWAY,
       exp: now + TOKEN_EXPIRY - TOKEN_LEEWAY,
       sub: options.userId,
@@ -125,7 +125,7 @@ export default class Authenticator {
 
     let claims = {
       app: this.appId,
-      iss: this.appKeyId,
+      iss: `api_keys/${this.appKeyId}`,
       iat: now - TOKEN_LEEWAY,
       refresh: true,
       sub: options.userId,
