@@ -1,8 +1,9 @@
 import extend = require("extend");
-import {IncomingMessage, ServerResponse} from "http";
+import {IncomingMessage} from "http";
+import {IncomingMessageWithBody} from "./common";
 import * as jwt from "jsonwebtoken";
 
-import Authenticator, {TokenWithExpiry} from "./authenticator";
+import Authenticator, { TokenWithExpiry, AuthenticationResponse } from "./authenticator";
 import BaseClient from "./base_client";
 import {AuthenticateOptions, RequestOptions} from "./common";
 
@@ -56,8 +57,8 @@ export default class App {
     return this.client.request(options);
   }
 
-  authenticate(request: IncomingMessage, response: ServerResponse, options: AuthenticateOptions) {
-    this.authenticator.authenticate(request, response, options);
+  authenticate(request: IncomingMessageWithBody, options: AuthenticateOptions): AuthenticationResponse {
+    return this.authenticator.authenticate(request, options);
   }
 
   generateAccessToken(options: AuthenticateOptions): TokenWithExpiry {
