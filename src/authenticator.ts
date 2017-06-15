@@ -6,6 +6,15 @@ import {AuthenticateOptions} from "./common";
 const TOKEN_LEEWAY = 30;
 const TOKEN_EXPIRY = 24*60*60;
 
+export interface TokenWithExpiry {
+  token: string;
+  expires_in: number;
+}
+
+export interface RefreshToken {
+  token: string;
+}
+
 export default class Authenticator {
   constructor(
       private appId: string,
@@ -32,13 +41,13 @@ export default class Authenticator {
   }
 
   private authenticateWithClientCredentials(response: ServerResponse, options: AuthenticateOptions) {
-    let accessToken = this.generateAccessToken(options);
+    let {token} = this.generateAccessToken(options);
     let refreshToken = this.generateRefreshToken(options);
     writeResponse(response, 200, {
-      access_token: accessToken,
+      access_token: token,
       token_type: "bearer",
       expires_in: TOKEN_EXPIRY,
-      refresh_token: refreshToken,
+      refresh_token: refreshToken.token,
     });
   }
 
@@ -89,11 +98,11 @@ export default class Authenticator {
       access_token: newAccessToken,
       token_type: "bearer",
       expires_in: TOKEN_EXPIRY,
-      refresh_token: newRefreshToken,
+      refresh_token: newRefreshToken.token,
     });
   }
 
-  private generateAccessToken(options: AuthenticateOptions): string {
+  generateAccessToken(options: AuthenticateOptions): TokenWithExpiry {
     let now = Math.floor(Date.now() / 1000);
 
     let claims = {
@@ -102,12 +111,16 @@ export default class Authenticator {
       iat: now - TOKEN_LEEWAY,
       exp: now + TOKEN_EXPIRY - TOKEN_LEEWAY,
       sub: options.userId,
+      ...options.serviceClaims,
     };
 
-    return jwt.sign(claims, this.appKeySecret);
+    return {
+      token: jwt.sign(claims, this.appKeySecret),
+      expires_in: TOKEN_EXPIRY,
+    };
   }
 
-  private generateRefreshToken(options: AuthenticateOptions): string {
+  private generateRefreshToken(options: AuthenticateOptions): RefreshToken {
     let now = Math.floor(Date.now() / 1000);
 
     let claims = {
@@ -118,7 +131,9 @@ export default class Authenticator {
       sub: options.userId,
     };
 
-    return jwt.sign(claims, this.appKeySecret);
+    return {
+      token: jwt.sign(claims, this.appKeySecret),
+    };
   }
 }
 
