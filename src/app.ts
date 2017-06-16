@@ -49,14 +49,6 @@ export default class App {
     return this.client.request(options);
   }
 
-  configRequest(options: RequestOptions): Promise<IncomingMessage> {
-    options = this.scopeRequestOptions("config/apps", options);
-    if (options.jwt == null) {
-      options = extend(options, { jwt: this.generateSuperuserJWT() });
-    }
-    return this.client.request(options);
-  }
-
   authenticate(request: IncomingMessageWithBody, options: AuthenticateOptions): AuthenticationResponse {
     return this.authenticator.authenticate(request, options);
   }
