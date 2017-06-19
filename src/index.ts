@@ -4,7 +4,7 @@ export {IncomingMessage as IncomingMessage} from "http";
 export {ErrorResponse} from "./common";
 export {UnsupportedGrantTypeError, InvalidGrantTypeError} from './errors';
 
-export {default as App} from "./app";
+export {default as Service} from "./service";
 
 export {default as BaseClient} from "./base_client";
 

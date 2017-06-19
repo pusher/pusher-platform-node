@@ -28,9 +28,9 @@ export interface AuthenticationResponse {
 
 export default class Authenticator {
   constructor(
-      private appId: string,
-      private appKeyId: string,
-      private appKeySecret: string) {
+      private serviceId: string,
+      private serviceKeyId: string,
+      private serviceKeySecret: string) {
 
   }
 
@@ -49,7 +49,7 @@ export default class Authenticator {
     }
   }
 
-  private authenticateWithClientCredentials(options: AuthenticateOptions): AuthenticationResponse { 
+  private authenticateWithClientCredentials(options: AuthenticateOptions): AuthenticationResponse {
     let {token} = this.generateAccessToken(options);
     let refreshToken = this.generateRefreshToken(options);
     
@@ -65,8 +65,8 @@ export default class Authenticator {
       let decoded: any;
 
       try {
-        decoded = jwt.verify(oldRefreshToken, this.appKeySecret, {
-          issuer: `keys/${this.appKeyId}`,
+        decoded = jwt.verify(oldRefreshToken, this.serviceKeySecret, {
+          issuer: `keys/${this.serviceKeyId}`,
           clockTolerance: TOKEN_LEEWAY,
         });
       } catch (e) {
@@ -97,8 +97,8 @@ export default class Authenticator {
     let now = Math.floor(Date.now() / 1000);
 
     let claims = {
-      app: this.appId,
-      iss: `api_keys/${this.appKeyId}`,
+      app: this.serviceId,
+      iss: `api_keys/${this.serviceKeyId}`,
       iat: now - TOKEN_LEEWAY,
       exp: now + TOKEN_EXPIRY - TOKEN_LEEWAY,
       sub: options.userId,
@@ -106,7 +106,7 @@ export default class Authenticator {
     };
 
     return {
-      token: jwt.sign(claims, this.appKeySecret),
+      token: jwt.sign(claims, this.serviceKeySecret),
       expires_in: TOKEN_EXPIRY,
     };
   }
@@ -115,15 +115,15 @@ export default class Authenticator {
     let now = Math.floor(Date.now() / 1000);
 
     let claims = {
-      app: this.appId,
-      iss: `api_keys/${this.appKeyId}`,
+      app: this.serviceId,
+      iss: `api_keys/${this.serviceKeyId}`,
       iat: now - TOKEN_LEEWAY,
       refresh: true,
       sub: options.userId,
     };
 
     return {
-      token: jwt.sign(claims, this.appKeySecret),
+      token: jwt.sign(claims, this.serviceKeySecret),
     };
   }
 }
