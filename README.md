@@ -21,14 +21,14 @@ In order to access Pusher Platform, first instantiate an App object:
 ```js
 var pusher = require("pusher-platform");
 
-var pusherApp = new pusher.App({
+var app = new pusher.App({
   cluster: "",
   app_id: "",
   app_key: "",
 });
 ```
 
-### Authentication (Express)
+### Authetication
 
 App objects provide an `authenticate` method, which can be used in controllers
 to build authentication endpoints. Authentication endpoints issue access tokens
@@ -37,11 +37,35 @@ used by Pusher Platform clients to access the API.
 Make sure you authenticate the user before issuing access tokens.
 
 ```js
-app.post('/auth', bodyParser.urlencoded(), function(req, res) {
-  pusherApp.authenticate(req, res, {
-    user_id: "",
-  });
+let authOptions = {
+  userId: 'zan',
+  serviceClaims: {
+    claim1: 'sdsdsd'
+    ...
+  }
+}
+
+let authResponse = app.authenticate(req, {
+  userId: 'r00t',
+  serviceClaims: {
+    name: 'zan',
+    admin: true
+  }
 });
+```
+
+Where the authResponse is an object containing your access and refresh tokens:
+
+```js
+let = authResponse: {
+  access_token: {
+    token: 'adsasd',
+    expires_id: 1000
+  },
+  token_type: 'bearer';
+  expires_in: 20000;
+  refresh_token: 'cvbccvbb'
+}
 ```
 
 ### Request API
@@ -71,14 +95,5 @@ pusherApp.request({
   } else {
     console.log(e);
   }
-});
-```
-
-Apps also provide a config request API:
-
-```js
-pusher.config_request({
-  method: "GET",
-  path: "keys",
 });
 ```
