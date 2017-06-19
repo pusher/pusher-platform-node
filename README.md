@@ -16,21 +16,21 @@ Add `pusher-platform` to your package.json file:
 
 ## Usage
 
-In order to access Pusher Platform, first instantiate an App object:
+In order to access Pusher Platform, first instantiate an Service object:
 
 ```js
 var pusher = require("pusher-platform");
 
-var app = new pusher.App({
+var pusherService = new pusher.Service({
   cluster: "",
-  app_id: "",
-  app_key: "",
+  serviceId: "",
+  serviceKey: "",
 });
 ```
 
 ### Authetication
 
-App objects provide an `authenticate` method, which can be used in controllers
+Service objects provide an `authenticate` method, which can be used in controllers
 to build authentication endpoints. Authentication endpoints issue access tokens
 used by Pusher Platform clients to access the API.
 
@@ -45,7 +45,7 @@ let authOptions = {
   }
 }
 
-let authResponse = app.authenticate(req, {
+let authResponse = pusherService.authenticate(req, {
   userId: 'r00t',
   serviceClaims: {
     name: 'zan',
@@ -70,11 +70,11 @@ let = authResponse: {
 
 ### Request API
 
-App objects provide a low-level request API, which can be used to contact
+Service objects provide a low-level request API, which can be used to contact
 Pusher Platform.
 
 ```js
-pusherApp.request({
+pusherService.request({
   method: "POST",
   path: "feeds/playground",
   headers: {
