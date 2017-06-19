@@ -14,7 +14,7 @@ export interface Options {
   client?: BaseClient;
 }
 
-export default class App {
+export default class Service {
   private client: BaseClient;
   private serviceId: string;
   private serviceKeyId: string;
@@ -27,7 +27,7 @@ export default class App {
 
     let keyParts = options.serviceKey.match(/^([^:]+):(.+)$/);
     if (!keyParts) {
-      throw new Error("Invalid app key");
+      throw new Error("Invalid service key");
     }
     this.serviceKeyId = keyParts[1];
     this.serviceKeySecret = keyParts[2];
