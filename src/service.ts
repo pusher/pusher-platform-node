@@ -9,35 +9,35 @@ import {AuthenticateOptions, RequestOptions} from "./common";
 
 export interface Options {
   cluster: string;
-  appId: string;
-  appKey: string;
+  serviceId: string;
+  serviceKey: string;
   client?: BaseClient;
 }
 
-export default class App {
+export default class Service {
   private client: BaseClient;
-  private appId: string;
-  private appKeyId: string;
-  private appKeySecret: string;
+  private serviceId: string;
+  private serviceKeyId: string;
+  private serviceKeySecret: string;
 
   private authenticator: Authenticator;
 
   constructor(options: Options) {
-    this.appId = options.appId;
+    this.serviceId = options.serviceId;
 
-    let keyParts = options.appKey.match(/^([^:]+):(.+)$/);
+    let keyParts = options.serviceKey.match(/^([^:]+):(.+)$/);
     if (!keyParts) {
-      throw new Error("Invalid app key");
+      throw new Error("Invalid service key");
     }
-    this.appKeyId = keyParts[1];
-    this.appKeySecret = keyParts[2];
+    this.serviceKeyId = keyParts[1];
+    this.serviceKeySecret = keyParts[2];
 
     this.client = options.client || new BaseClient({
       host: options.cluster,
     });
 
     this.authenticator = new Authenticator(
-      this.appId, this.appKeyId, this.appKeySecret
+      this.serviceId, this.serviceKeyId, this.serviceKeySecret
     );
   }
 
@@ -58,7 +58,7 @@ export default class App {
   }
 
   private scopeRequestOptions(prefix: string, options: RequestOptions): RequestOptions {
-    let path = `/${prefix}/${this.appId}/${options.path}`
+    let path = `/${prefix}/${this.serviceId}/${options.path}`
       .replace(/\/+/g, "/")
       .replace(/\/+$/, "");
     return extend(
@@ -70,12 +70,12 @@ export default class App {
   private generateSuperuserJWT() {
     let now = Math.floor(Date.now() / 1000);
     var claims = {
-      app: this.appId,
-      iss: this.appKeyId,
+      app: this.serviceId,
+      iss: this.serviceKeyId,
       su: true,
       iat: now - 30,   // some leeway for the server
       exp: now + 60*5, // 5 minutes should be enough for a single request
     };
-    return jwt.sign(claims, this.appKeySecret);
+    return jwt.sign(claims, this.serviceKeySecret);
   }
 }

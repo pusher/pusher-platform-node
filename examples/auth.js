@@ -1,10 +1,10 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 
-var PusherApp = require('../lib/index').App;
-var pusher = new PusherApp({
-  appID: process.env.APP_ID,
-  appKey: process.env.APP_KEY,
+var PusherService = require('../lib/index').Service;
+var pusher = new PusherService({
+  serviceId: process.env.SERVICE_ID,
+  serviceKey: process.env.SERVICE_KEY,
 });
 
 var app = express();
