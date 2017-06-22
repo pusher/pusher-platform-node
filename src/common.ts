@@ -30,3 +30,8 @@ export interface AuthenticateOptions {
   userId: string;
   serviceClaims: any;
 }
+
+export interface AuthenticatePayload {
+  grant_type?: string;
+  refresh_token?: string;
+}

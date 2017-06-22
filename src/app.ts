@@ -5,7 +5,7 @@ import * as jwt from "jsonwebtoken";
 
 import Authenticator, { TokenWithExpiry, AuthenticationResponse } from "./authenticator";
 import BaseClient from "./base_client";
-import {AuthenticateOptions, RequestOptions} from "./common";
+import {AuthenticateOptions, RequestOptions, AuthenticatePayload} from "./common";
 
 export interface Options {
   cluster: string;
@@ -49,8 +49,8 @@ export default class App {
     return this.client.request(options);
   }
 
-  authenticate(request: IncomingMessageWithBody, options: AuthenticateOptions): AuthenticationResponse {
-    return this.authenticator.authenticate(request, options);
+  authenticate(authenticatePayload: AuthenticatePayload, options: AuthenticateOptions): AuthenticationResponse {
+    return this.authenticator.authenticate(authenticatePayload, options);
   }
 
   generateAccessToken(options: AuthenticateOptions): TokenWithExpiry {
