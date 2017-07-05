@@ -6,22 +6,37 @@ import {Readable} from "stream";
 import {RequestOptions, ErrorResponse} from "./common";
 import {readJSON} from "./decoders";
 
-export interface Options {
+export interface BaseClientOptions {
   host: string;
   port?: number;
+  serviceName: string;
+  serviceVersion: string;
+  instanceId: string;
 }
 
 export default class BaseClient {
   private host: string;
   private port: number;
+  private serviceName: string;
+  private serviceVersion: string;
+  private instanceId: string;
 
-  constructor(options?: Options) {
+  constructor(options?: BaseClientOptions) {
     this.host = options.host;
     this.port = options.port || 443;
+    this.serviceName = options.serviceName;
+    this.serviceVersion = options.serviceVersion;
+    this.instanceId = options.instanceId;
   }
 
+  /**
+   * Make a HTTPS request to a service running on Elements.
+   * It will construct a valid elements URL from its serviceName, serviceVersion and instanceId that were passed to the Instance at construction time.
+   */
   request(options: RequestOptions): Promise<IncomingMessage> {
     var headers: any = {};
+    
+    let path = `services/${this.serviceName}/${this.serviceVersion}/${this.instanceId}/${options.path}`;
 
     if (options.headers) {
       for (var key in options.headers) {
@@ -36,7 +51,7 @@ export default class BaseClient {
       host: this.host,
       port: this.port,
       method: options.method,
-      path: options.path,
+      path: path,
       headers: headers,
     };
     var request = https.request(sendOptions);

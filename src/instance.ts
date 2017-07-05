@@ -12,37 +12,53 @@ import {AuthenticateOptions, RequestOptions, AuthenticatePayload} from "./common
 // 5 minutes should be enough for a single sudo request
 const SUPERUSER_TOKEN_EXPIRY = 60*5;
 
-export interface Options {
+export interface InstanceOptions {
   cluster: string;
-  appId: string;
-  appKey: string;
+  instanceId: string;
+  key: string;
+  serviceName: string;
+  serviceVersion: string;
+
   client?: BaseClient;
 }
 
-export default class App {
+export default class Instance {
   private client: BaseClient;
-  private appId: string;
-  private appKeyId: string;
-  private appKeySecret: string;
+  private instanceId: string;
+  private serviceName: string;
+  private serviceVersion: string;
+
+  private keyId: string;
+  private keySecret: string;
 
   private authenticator: Authenticator;
 
-  constructor(options: Options) {
-    this.appId = options.appId;
+  constructor(options: InstanceOptions) {
 
-    let keyParts = options.appKey.match(/^([^:]+):(.+)$/);
+    if(!options.instanceId) throw new Error("instanceId in options must be set.");
+    if(!options.serviceName) throw new Error("serviceName in options must be set.");
+    if(!options.serviceVersion) throw new Error("serviceVersion in options must be set.");
+
+    this.instanceId = options.instanceId;
+    this.serviceName = options.serviceName;
+    this.serviceVersion = options.serviceVersion;
+
+    let keyParts = options.key.match(/^([^:]+):(.+)$/);
     if (!keyParts) {
-      throw new Error("Invalid app key");
+      throw new Error("Invalid instance key");
     }
-    this.appKeyId = keyParts[1];
-    this.appKeySecret = keyParts[2];
+    this.keyId = keyParts[1];
+    this.keySecret = keyParts[2];
 
     this.client = options.client || new BaseClient({
       host: options.cluster,
+      instanceId: this.instanceId,
+      serviceName: this.serviceName,
+      serviceVersion: this.serviceVersion
     });
 
     this.authenticator = new Authenticator(
-      this.appId, this.appKeyId, this.appKeySecret
+      this.instanceId, this.keyId, this.keySecret
     );
   }
 
@@ -61,25 +77,25 @@ export default class App {
   generateAccessToken(options: AuthenticateOptions): TokenWithExpiry {
     return this.authenticator.generateAccessToken(options);
   }
-
+  
   generateSuperuserJWT() {
     let now = Math.floor(Date.now() / 1000);
     var claims = {
-      app: this.appId,
-      iss: this.appKeyId,
+      app: this.instanceId,
+      iss: this.keyId,
       su: true,
       iat: now - TOKEN_LEEWAY,
       exp: now + SUPERUSER_TOKEN_EXPIRY,
     };
 
     return {
-      jwt: jwt.sign(claims, this.appKeySecret),
+      jwt: jwt.sign(claims, this.keySecret),
       expires_in: SUPERUSER_TOKEN_EXPIRY
     };
   }
 
   private scopeRequestOptions(prefix: string, options: RequestOptions): RequestOptions {
-    let path = `/${prefix}/${this.appId}/${options.path}`
+    let path = `/${prefix}/${this.instanceId}/${options.path}`
       .replace(/\/+/g, "/")
       .replace(/\/+$/, "");
     return extend(

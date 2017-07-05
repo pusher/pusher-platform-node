@@ -4,33 +4,41 @@ Pusher Platform SDK for Node.js.
 
 ## Installation
 
-Add `pusher-platform` to your package.json file:
+Add `pusher-platform-node` to your package.json file:
 
 ```json
 {
   "dependencies": {
-    "pusher-platform": "^0.2.0"
+    "pusher-platform-node": "^0.5.0"
   }
 }
 ```
 
 ## Usage
 
-In order to access Pusher Platform, first instantiate an App object:
+In order to access Pusher Platform, first instantiate an Instance object. 
+It takes the following arguments:
 
 ```js
-var pusher = require("pusher-platform");
+var pusher = require("pusher-platform-node");
 
-var app = new pusher.App({
+var instance = new pusher.Instance({
   cluster: "",
-  app_id: "",
-  app_key: "",
+  instanceId: "",
+  serviceName: "",
+  serviceVersion: "",
+  instanceKey: "",
 });
 ```
+Note that `cluster` will likely change in the near future.
+
+`instanceID` is the ID that is unique to app developers' instance - they get that from the dashboard. The service SDKs will need to relay that down. Same for the `instanceKey`.
+`serviceName` and `serviceVersion` should come from the service SDK itself. They can be hardcoded there. Think `feeds` and `v1`.
+
 
 ### Authetication
 
-App objects provide an `authenticate` method, which can be used in controllers
+Instance objects provide an `authenticate` method, which can be used in controllers
 to build authentication endpoints. Authentication endpoints issue access tokens
 used by Pusher Platform clients to access the API.
 
@@ -77,8 +85,7 @@ let = authResponse: {
 
 ### Request API
 
-App objects provide a low-level request API, which can be used to contact
-Pusher Platform.
+Instance objects provide a low-level request API, which can be used to contact Pusher Platform.
 
 ```js
 pusherApp.request({
