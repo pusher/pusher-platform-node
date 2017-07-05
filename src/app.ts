@@ -57,17 +57,7 @@ export default class App {
     return this.authenticator.generateAccessToken(options);
   }
 
-  private scopeRequestOptions(prefix: string, options: RequestOptions): RequestOptions {
-    let path = `/${prefix}/${this.appId}/${options.path}`
-      .replace(/\/+/g, "/")
-      .replace(/\/+$/, "");
-    return extend(
-      options,
-      { path: path }
-    );
-  }
-
-  private generateSuperuserJWT() {
+  generateSuperuserJWT() {
     let now = Math.floor(Date.now() / 1000);
     var claims = {
       app: this.appId,
@@ -77,5 +67,15 @@ export default class App {
       exp: now + 60*5, // 5 minutes should be enough for a single request
     };
     return jwt.sign(claims, this.appKeySecret);
+  }
+
+  private scopeRequestOptions(prefix: string, options: RequestOptions): RequestOptions {
+    let path = `/${prefix}/${this.appId}/${options.path}`
+      .replace(/\/+/g, "/")
+      .replace(/\/+$/, "");
+    return extend(
+      options,
+      { path: path }
+    );
   }
 }
