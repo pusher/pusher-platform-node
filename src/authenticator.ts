@@ -4,7 +4,7 @@ import * as jwt from "jsonwebtoken";
 import {AuthenticateOptions, IncomingMessageWithBody} from "./common";
 import {UnsupportedGrantTypeError, InvalidGrantTypeError} from "./errors";
 
-const TOKEN_LEEWAY = 30;
+export const TOKEN_LEEWAY = 60*10;
 const TOKEN_EXPIRY = 24*60*60;
 const CLIENT_CREDENTIALS_GRANT_TYPE = "client_credentials";
 const REFRESH_TOKEN_GRANT_TYPE = "refresh_token";
@@ -49,7 +49,7 @@ export default class Authenticator {
     }
   }
 
-  private authenticateWithClientCredentials(options: AuthenticateOptions): AuthenticationResponse { 
+  private authenticateWithClientCredentials(options: AuthenticateOptions): AuthenticationResponse {
     let {token} = this.generateAccessToken(options);
     let refreshToken = this.generateRefreshToken(options);
     
