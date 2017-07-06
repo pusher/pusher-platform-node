@@ -12,13 +12,17 @@ import {AuthenticateOptions, RequestOptions, AuthenticatePayload} from "./common
 // 5 minutes should be enough for a single sudo request
 const SUPERUSER_TOKEN_EXPIRY = 60*5;
 
+const HOST_BASE = "pusherplatform.io";
+const HTTPS_PORT = 443;
+
 export interface InstanceOptions {
-  cluster: string;
-  instanceId: string;
+  instance: string;
   key: string;
   serviceName: string;
   serviceVersion: string;
 
+  port?: number;
+  host?: string;
   client?: BaseClient;
 }
 
@@ -27,19 +31,27 @@ export default class Instance {
   private instanceId: string;
   private serviceName: string;
   private serviceVersion: string;
+  private cluster: string;
+  private platformVersion: string;
 
   private keyId: string;
   private keySecret: string;
+  private host: string;
 
   private authenticator: Authenticator;
 
   constructor(options: InstanceOptions) {
 
-    if(!options.instanceId) throw new Error("instanceId in options must be set.");
-    if(!options.serviceName) throw new Error("serviceName in options must be set.");
-    if(!options.serviceVersion) throw new Error("serviceVersion in options must be set.");
+    if (!options.instance) throw new Error('Expected `instance` property in Instance options!');
+    if (options.instance.split(":").length !== 3) throw new Error('The instance property is in the wrong format!');
+    if(!options.serviceName) throw new Error('Expected `serviceName` property in Instance options!');
+    if(!options.serviceVersion) throw new Error('Expected `serviceVersion` property in Instance otpions!');
 
-    this.instanceId = options.instanceId;
+    let splitInstance = options.instance.split(":");
+    this.platformVersion = splitInstance[0];
+    this.cluster = splitInstance[1];
+    this.instanceId = splitInstance[2];
+
     this.serviceName = options.serviceName;
     this.serviceVersion = options.serviceVersion;
 
@@ -50,11 +62,21 @@ export default class Instance {
     this.keyId = keyParts[1];
     this.keySecret = keyParts[2];
 
+    let host = `${this.cluster}.${HOST_BASE}`
+    if(options.host) {
+      host = options.host;
+    }
+    let port = HTTPS_PORT;
+    if(options.port){
+      port = options.port;
+    }
+
     this.client = options.client || new BaseClient({
-      host: options.cluster,
+      host: host,
       instanceId: this.instanceId,
       serviceName: this.serviceName,
-      serviceVersion: this.serviceVersion
+      serviceVersion: this.serviceVersion,
+      port: port
     });
 
     this.authenticator = new Authenticator(

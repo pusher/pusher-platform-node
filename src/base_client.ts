@@ -8,7 +8,7 @@ import {readJSON} from "./decoders";
 
 export interface BaseClientOptions {
   host: string;
-  port?: number;
+  port: number;
   serviceName: string;
   serviceVersion: string;
   instanceId: string;
@@ -23,7 +23,7 @@ export default class BaseClient {
 
   constructor(options?: BaseClientOptions) {
     this.host = options.host;
-    this.port = options.port || 443;
+    this.port = options.port
     this.serviceName = options.serviceName;
     this.serviceVersion = options.serviceVersion;
     this.instanceId = options.instanceId;
