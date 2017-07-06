@@ -8,13 +8,16 @@ import {readJSON} from "./decoders";
 
 export interface Options {
   host: string;
+  port?: number;
 }
 
 export default class BaseClient {
   private host: string;
+  private port: number;
 
   constructor(options?: Options) {
     this.host = options.host;
+    this.port = options.port || 443;
   }
 
   request(options: RequestOptions): Promise<IncomingMessage> {
@@ -31,6 +34,7 @@ export default class BaseClient {
 
     var sendOptions = {
       host: this.host,
+      port: this.port,
       method: options.method,
       path: options.path,
       headers: headers,
