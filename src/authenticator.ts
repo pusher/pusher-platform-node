@@ -52,7 +52,7 @@ export default class Authenticator {
   private authenticateWithClientCredentials(options: AuthenticateOptions): AuthenticationResponse {
     let {token} = this.generateAccessToken(options);
     let refreshToken = this.generateRefreshToken(options);
-    
+
     return {
       access_token: token,
       token_type: "bearer",
