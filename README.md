@@ -36,22 +36,29 @@ used by Pusher Platform clients to access the API.
 
 Make sure you authenticate the user before issuing access tokens.
 
+- `authenticatePayload` param is essentially object of type `AuthenticatePayload`. The object must have the following format: (Please note that if you using one of our client libraries they will handle this format for you)
+
 ```js
+type AuthenticatePayload {
+  grant_type?: string;
+  refresh_token?: string;
+};
+```
+
+```js
+let authenticatePayload = {
+  grant_type: 'client_credentials'
+};
+
 let authOptions = {
   userId: 'zan',
   serviceClaims: {
     claim1: 'sdsdsd'
     ...
   }
-}
+};
 
-let authResponse = app.authenticate(req, {
-  userId: 'r00t',
-  serviceClaims: {
-    name: 'zan',
-    admin: true
-  }
-});
+let authResponse = app.authenticate(authenticatePayload, authOptions);
 ```
 
 Where the authResponse is an object containing your access and refresh tokens:
