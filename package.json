@@ -1,10 +1,11 @@
 {
   "name": "pusher-platform-node",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "main": "./target/index.js",
   "types": "./target/index.d.ts",
   "dependencies": {
     "extend": "^2.0.1",
+    "body-parser": "^1.17.2",
     "jsonwebtoken": "^7.4.1"
   },
   "devDependencies": {

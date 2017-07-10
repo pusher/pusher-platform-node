@@ -7,7 +7,7 @@ import Authenticator, {
   TokenWithExpiry, AuthenticationResponse, TOKEN_LEEWAY
 } from "./authenticator";
 import BaseClient from "./base_client";
-import {AuthenticateOptions, RequestOptions} from "./common";
+import {AuthenticateOptions, RequestOptions, AuthenticatePayload} from "./common";
 
 // 5 minutes should be enough for a single sudo request
 const SUPERUSER_TOKEN_EXPIRY = 60*5;
@@ -54,8 +54,8 @@ export default class App {
     return this.client.request(options);
   }
 
-  authenticate(request: IncomingMessageWithBody, options: AuthenticateOptions): AuthenticationResponse {
-    return this.authenticator.authenticate(request, options);
+  authenticate(authenticatePayload: AuthenticatePayload, options: AuthenticateOptions): AuthenticationResponse {
+    return this.authenticator.authenticate(authenticatePayload, options);
   }
 
   generateAccessToken(options: AuthenticateOptions): TokenWithExpiry {

@@ -1,7 +1,7 @@
 import {IncomingMessage} from "http";
 import * as jwt from "jsonwebtoken";
 
-import {AuthenticateOptions, IncomingMessageWithBody} from "./common";
+import {AuthenticateOptions, IncomingMessageWithBody, AuthenticatePayload} from "./common";
 import {UnsupportedGrantTypeError, InvalidGrantTypeError} from "./errors";
 
 export const TOKEN_LEEWAY = 60*10;
@@ -34,15 +34,14 @@ export default class Authenticator {
 
   }
 
-  authenticate(request: IncomingMessageWithBody, options: AuthenticateOptions): AuthenticationResponse {
-    let body = request.body; // FIXME - we should figure out better way then just rely on express.js body parser.
-    let grantType = body["grant_type"];
+  authenticate(authenticatePayload: AuthenticatePayload, options: AuthenticateOptions): AuthenticationResponse {
+    let grantType = authenticatePayload["grant_type"];
 
     switch (grantType) {
       case CLIENT_CREDENTIALS_GRANT_TYPE:
         return this.authenticateWithClientCredentials(options);
       case REFRESH_TOKEN_GRANT_TYPE:
-        let oldRefreshToken = body[REFRESH_TOKEN_GRANT_TYPE];
+        let oldRefreshToken = authenticatePayload[REFRESH_TOKEN_GRANT_TYPE];
         return this.authenticateWithRefreshToken(oldRefreshToken, options);
       default:
         throw new UnsupportedGrantTypeError(`Requested type: "${grantType}" is not supported`);

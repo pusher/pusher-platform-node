@@ -11,7 +11,7 @@ var app = express();
 
 app.post('/', bodyParser.urlencoded(), function (req, res) {
   try {
-    const data = pusher.authenticate(req, {})
+    const data = pusher.authenticate(req.body, {});
     res.send(data);
   } catch (err) {
     res.send('AuthError: ' + err.message);

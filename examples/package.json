@@ -1,0 +1,19 @@
+{
+  "name": "pusher-platform-node-example",
+  "version": "0.0.1",
+  "main": "./auth.js",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3"
+  },
+  "devDependencies": {
+    "typescript": "^2.1.0"
+  },
+  "scripts": {
+    "start": "node auth.js"
+  },
+  "author": "Pusher <support@pusher.com>",
+  "description": "Pusher Platform Node.js SDK",
+  "license": "MIT",
+  "repository": "git://github.com/pusher/pusher-platform-nodejs"
+}
