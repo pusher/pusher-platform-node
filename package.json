@@ -1,23 +1,24 @@
 {
   "name": "pusher-platform-node",
-  "version": "0.3.0",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "version": "0.4.3",
+  "main": "./target/index.js",
+  "types": "./target/index.d.ts",
   "dependencies": {
-    "@types/es6-promise": "0.0.32",
-    "@types/extend": "^2.0.0",
-    "@types/jsonwebtoken": "^7.2.0",
+    "extend": "^2.0.1",
     "body-parser": "^1.17.2",
     "jsonwebtoken": "^7.4.1"
   },
   "devDependencies": {
-    "typescript": "^2.1.0"
+    "typescript": "^2.4.1",
+    "@types/es6-promise": "0.0.32",
+    "@types/extend": "^2.0.0",
+    "@types/jsonwebtoken": "^7.2.0"
   },
   "scripts": {
-    "prepublish": "tsc"
+    "prepublish": "rm -rf target && tsc"
   },
   "author": "Pusher <support@pusher.com>",
   "description": "Pusher Platform Node.js SDK",
   "license": "MIT",
-  "repository": "git://github.com/pusher/pusher-platform-nodejs"
+  "repository": "git://github.com/pusher/pusher-platform-node"
 }
