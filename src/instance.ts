@@ -62,21 +62,12 @@ export default class Instance {
     this.keyId = keyParts[1];
     this.keySecret = keyParts[2];
 
-    let host = `${this.cluster}.${HOST_BASE}`
-    if(options.host) {
-      host = options.host;
-    }
-    let port = HTTPS_PORT;
-    if(options.port){
-      port = options.port;
-    }
-
     this.client = options.client || new BaseClient({
-      host: host,
+      host: options.host || `${this.cluster}.${HOST_BASE}`,
       instanceId: this.instanceId,
       serviceName: this.serviceName,
       serviceVersion: this.serviceVersion,
-      port: port
+      port: options.port || HTTPS_PORT
     });
 
     this.authenticator = new Authenticator(
