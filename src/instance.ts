@@ -76,9 +76,12 @@ export default class Instance {
   }
 
   request(options: RequestOptions): Promise<IncomingMessage> {
-    options = this.scopeRequestOptions("apps", options);
+    options = this.scopeRequestOptions(options);
+
     if (options.jwt == null) {
-      options = extend(options, { jwt: this.generateSuperuserJWT().jwt });
+
+      //TODO:
+      // options = extend(options, { jwt: `${this.generateSuperuserJWT().jwt}` });
     }
     return this.client.request(options);
   }
@@ -90,30 +93,14 @@ export default class Instance {
   generateAccessToken(options: AuthenticateOptions): TokenWithExpiry {
     return this.authenticator.generateAccessToken(options);
   }
-  
-  generateSuperuserJWT() {
-    let now = Math.floor(Date.now() / 1000);
-    var claims = {
-      app: this.instanceId,
-      iss: this.keyId,
-      su: true,
-      iat: now - TOKEN_LEEWAY,
-      exp: now + SUPERUSER_TOKEN_EXPIRY,
-    };
 
-    return {
-      jwt: jwt.sign(claims, this.keySecret),
-      expires_in: SUPERUSER_TOKEN_EXPIRY
-    };
-  }
-
-  private scopeRequestOptions(prefix: string, options: RequestOptions): RequestOptions {
-    let path = `/${prefix}/${this.instanceId}/${options.path}`
-      .replace(/\/+/g, "/")
-      .replace(/\/+$/, "");
-    return extend(
-      options,
-      { path: path }
-    );
-  }
+     private scopeRequestOptions(options: RequestOptions): RequestOptions {
+      let path = options.path
+        .replace(/\/ /g, "/")
+        .replace(/\/ $/, "");
+      return extend(
+        options,
+        { path: path }
+      );
+    }
 }

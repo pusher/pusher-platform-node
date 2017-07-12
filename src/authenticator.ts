@@ -93,6 +93,7 @@ export default class Authenticator {
   }
 
   generateAccessToken(options: AuthenticateOptions): TokenWithExpiry {
+
     let now = Math.floor(Date.now() / 1000);
 
     let claims = {
@@ -101,7 +102,7 @@ export default class Authenticator {
       iat: now - TOKEN_LEEWAY,
       exp: now + TOKEN_EXPIRY - TOKEN_LEEWAY,
       sub: options.userId,
-      ...options.serviceClaims,
+      ...options.serviceClaims
     };
 
     return {
