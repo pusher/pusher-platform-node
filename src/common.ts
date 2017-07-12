@@ -23,7 +23,7 @@ export interface RequestOptions {
   path: string;
   jwt?: string;
   headers?: Headers;
-  body?: Readable;
+  body?: any;
 }
 
 export interface AuthenticateOptions {

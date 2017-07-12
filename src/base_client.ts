@@ -2,9 +2,9 @@ import extend = require("extend");
 import {IncomingMessage} from "http";
 import * as https from "https";
 import {Readable} from "stream";
-
 import {RequestOptions, ErrorResponse} from "./common";
 import {readJSON} from "./decoders";
+import * as requestMethod from 'request';
 
 export interface BaseClientOptions {
   host: string;
@@ -47,55 +47,38 @@ export default class BaseClient {
       headers["Authorization"] = `Bearer ${options.jwt}`
     }
 
-    var sendOptions = {
-      host: this.host,
-      port: this.port,
-      method: options.method,
-      path: path,
-      headers: headers,
-    };
-    var request = https.request(sendOptions);
-
+    let host = `https://${this.host}:${this.port}/${path}`
     return new Promise<IncomingMessage>(function(resolve, reject) {
-      function onRequestError(error: any) {
-        unbind();
+
+    console.log(headers.Authorization);
+
+    requestMethod(host, {
+      body: JSON.stringify(options.body),
+      headers: headers,
+      method:options.method
+      
+    }, (error, response, body) => {
+
+    
+      if(error) {
         reject(error);
       }
-      function onResponse(response: IncomingMessage) {
-        unbind();
+      else{
         let statusCode = response.statusCode;
-        if (statusCode >= 200 && statusCode <= 299) {
-          resolve(response);
-        } else if (statusCode >= 300 && statusCode <= 399) {
+
+        if(statusCode >= 200 && statusCode <= 299) {
+        resolve(response);
+      }
+      else if (statusCode >= 300 && statusCode <= 399) {
           reject(new Error(`Unsupported Redirect Response: ${statusCode}`));
-        } else if (statusCode >= 400 && statusCode <= 599) {
-          readJSON(response).then(function(errorDescription) {
-            reject(
-              new ErrorResponse(statusCode, response.headers, errorDescription)
-            );
-          }).catch(function(error) {
-            // FIXME we should probably return raw body
-            reject(
-              new ErrorResponse(statusCode, response.headers, undefined)
-            );
-          });
-        } else {
-          reject(new Error(`Unsupported Response Code: ${statusCode}`));
-        }
+      } 
+      else if (statusCode >= 400 && statusCode <= 599) {
+        reject(new ErrorResponse(response.statusCode, response.headers,response.statusMessage));
+      } else { 
+        reject(new Error(`Unsupported Response Code: ${statusCode}`));
       }
-      function unbind() {
-        request.removeListener("response", onResponse);
-        request.removeListener("error", onResponse);
       }
-
-      request.addListener("response", onResponse);
-      request.addListener("error", onRequestError);
-
-      if (options.body) {
-        options.body.pipe(request);
-      } else {
-        request.end();
-      }
+    });
     });
   }
 }
