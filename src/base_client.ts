@@ -4,7 +4,9 @@ import * as https from "https";
 import {Readable} from "stream";
 import {RequestOptions, ErrorResponse} from "./common";
 import {readJSON} from "./decoders";
-import * as requestMethod from 'request';
+import * as HttpRequest from "request";
+import { format as formatURL } from "url";
+import { normalize as normalizePath } from "path";
 
 export interface BaseClientOptions {
   host: string;
@@ -35,8 +37,6 @@ export default class BaseClient {
    */
   request(options: RequestOptions): Promise<IncomingMessage> {
     var headers: any = {};
-    
-    let path = `services/${this.serviceName}/${this.serviceVersion}/${this.instanceId}/${options.path}`;
 
     if (options.headers) {
       for (var key in options.headers) {
@@ -47,38 +47,38 @@ export default class BaseClient {
       headers["Authorization"] = `Bearer ${options.jwt}`
     }
 
-    let host = `https://${this.host}:${this.port}/${path}`
+    const host = formatURL({
+      protocol: 'https',
+      hostname: this.host,
+      port: this.port,
+      pathname: normalizePath(`services/${this.serviceName}/${this.serviceVersion}/${this.instanceId}/${options.path}`)
+    });
+
     return new Promise<IncomingMessage>(function(resolve, reject) {
+      HttpRequest(host, {
+        body: JSON.stringify(options.body),
+        headers: headers,
+        method: options.method
+      }, (error, response, body) => {
+        if(error) {
+          reject(error);
+        }
+        else {
+          let statusCode = response.statusCode;
 
-    console.log(headers.Authorization);
-
-    requestMethod(host, {
-      body: JSON.stringify(options.body),
-      headers: headers,
-      method:options.method
-      
-    }, (error, response, body) => {
-
-    
-      if(error) {
-        reject(error);
-      }
-      else{
-        let statusCode = response.statusCode;
-
-        if(statusCode >= 200 && statusCode <= 299) {
-        resolve(response);
-      }
-      else if (statusCode >= 300 && statusCode <= 399) {
-          reject(new Error(`Unsupported Redirect Response: ${statusCode}`));
-      } 
-      else if (statusCode >= 400 && statusCode <= 599) {
-        reject(new ErrorResponse(response.statusCode, response.headers,response.statusMessage));
-      } else { 
-        reject(new Error(`Unsupported Response Code: ${statusCode}`));
-      }
-      }
-    });
-    });
+          if(statusCode >= 200 && statusCode <= 299) {
+            resolve(response);
+          }
+          else if (statusCode >= 300 && statusCode <= 399) {
+            eject(new Error(`Unsupported Redirect Response: ${statusCode}`));
+          } 
+          else if (statusCode >= 400 && statusCode <= 599) {
+            reject(new ErrorResponse(response.statusCode, response.headers,response.statusMessage));
+          } else { 
+            reject(new Error(`Unsupported Response Code: ${statusCode}`));
+          }
+        }
+      });
+  });
   }
 }
