@@ -108,6 +108,7 @@ export default class Authenticator {
       iat: now - this.tokenLeeway,
       exp: now + this.tokenExpiry - this.tokenLeeway,
       sub: options.userId,
+      su: options.su,
       ...options.serviceClaims
     };
 
