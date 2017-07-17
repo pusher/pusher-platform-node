@@ -1,13 +1,15 @@
+import { TOKEN_LEEWAY } from '../target/authenticator';
 import {IncomingMessage} from "http";
-import * as jwt from "jsonwebtoken";
+import * as jwt from 'jsonwebtoken';
 
 import {AuthenticateOptions, IncomingMessageWithBody, AuthenticatePayload} from "./common";
 import {UnsupportedGrantTypeError, InvalidGrantTypeError} from "./errors";
 
-export const TOKEN_LEEWAY = 60*10;
-const TOKEN_EXPIRY = 24*60*60;
+export const DEFAULT_TOKEN_LEEWAY = 60*10;
+const DEFAULT_TOKEN_EXPIRY = 24*60*60;
 const CLIENT_CREDENTIALS_GRANT_TYPE = "client_credentials";
 const REFRESH_TOKEN_GRANT_TYPE = "refresh_token";
+// const SUPERUSER_TOKEN_EXPIRY = 60*5; // 5 minutes should be enough for a single sudo request
 
 export interface TokenWithExpiry {
 
@@ -30,8 +32,14 @@ export default class Authenticator {
   constructor(
       private appId: string,
       private appKeyId: string,
-      private appKeySecret: string) {
+      private appKeySecret: string,
 
+      //Customise token expiry and leeway
+      private tokenExpiry?: number,
+      private tokenLeeway?: number
+    ) {
+      if(!this.tokenExpiry) this.tokenExpiry = DEFAULT_TOKEN_EXPIRY;
+      if(!this.tokenLeeway) this.tokenLeeway = DEFAULT_TOKEN_LEEWAY;
   }
 
   authenticate(authenticatePayload: AuthenticatePayload, options: AuthenticateOptions): AuthenticationResponse {
@@ -55,7 +63,7 @@ export default class Authenticator {
     return {
       access_token: token,
       token_type: "bearer",
-      expires_in: TOKEN_EXPIRY,
+      expires_in: this.tokenExpiry,
       refresh_token: refreshToken.token,
     };
   }
@@ -66,7 +74,7 @@ export default class Authenticator {
       try {
         decoded = jwt.verify(oldRefreshToken, this.appKeySecret, {
           issuer: `keys/${this.appKeyId}`,
-          clockTolerance: TOKEN_LEEWAY,
+          clockTolerance: this.tokenLeeway,
         });
       } catch (e) {
         let description: string = (e instanceof jwt.TokenExpiredError) ? "refresh token has expired" : "refresh token is invalid";
@@ -87,27 +95,26 @@ export default class Authenticator {
       return {
         access_token: newAccessToken,
         token_type: "bearer",
-        expires_in: TOKEN_EXPIRY,
+        expires_in: this.tokenExpiry,
         refresh_token: newRefreshToken.token,
       };
   }
 
   generateAccessToken(options: AuthenticateOptions): TokenWithExpiry {
-
     let now = Math.floor(Date.now() / 1000);
 
     let claims = {
       app: this.appId,
       iss: `api_keys/${this.appKeyId}`,
-      iat: now - TOKEN_LEEWAY,
-      exp: now + TOKEN_EXPIRY - TOKEN_LEEWAY,
+      iat: now - this.tokenLeeway,
+      exp: now + this.tokenExpiry - this.tokenLeeway,
       sub: options.userId,
       ...options.serviceClaims
     };
 
     return {
       token: jwt.sign(claims, this.appKeySecret),
-      expires_in: TOKEN_EXPIRY,
+      expires_in: this.tokenExpiry,
     };
   }
 
@@ -117,7 +124,7 @@ export default class Authenticator {
     let claims = {
       app: this.appId,
       iss: `api_keys/${this.appKeyId}`,
-      iat: now - TOKEN_LEEWAY,
+      iat: now - this.tokenLeeway,
       refresh: true,
       sub: options.userId,
     };

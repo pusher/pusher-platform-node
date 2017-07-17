@@ -4,13 +4,10 @@ import {IncomingMessageWithBody} from "./common";
 import * as jwt from "jsonwebtoken";
 
 import Authenticator, {
-  TokenWithExpiry, AuthenticationResponse, TOKEN_LEEWAY
+  TokenWithExpiry, AuthenticationResponse, DEFAULT_TOKEN_LEEWAY
 } from "./authenticator";
 import BaseClient from "./base_client";
 import {AuthenticateOptions, RequestOptions, AuthenticatePayload} from "./common";
-
-// 5 minutes should be enough for a single sudo request
-const SUPERUSER_TOKEN_EXPIRY = 60*5;
 
 const HOST_BASE = "pusherplatform.io";
 const HTTPS_PORT = 443;
@@ -78,14 +75,11 @@ export default class Instance {
   request(options: RequestOptions): Promise<IncomingMessage> {
     options = this.scopeRequestOptions(options);
 
-    
     console.log("REQUEST");
-    console.log(options.jwt);
+    console.log(options);
 
     if (options.jwt == null) {
-
-      //TODO:
-      // options = extend(options, { jwt: `${this.generateSuperuserJWT().jwt}` });
+      options = extend(options, { jwt: `${this.authenticator.generateAccessToken({ su: true }).token}` });
     }
     return this.client.request(options);
   }
@@ -98,13 +92,13 @@ export default class Instance {
     return this.authenticator.generateAccessToken(options);
   }
 
-     private scopeRequestOptions(options: RequestOptions): RequestOptions {
-      let path = options.path
-        .replace(/\/ /g, "/")
-        .replace(/\/ $/, "");
-      return extend(
-        options,
-        { path: path }
-      );
+  private scopeRequestOptions(options: RequestOptions): RequestOptions {
+    let path = options.path
+      .replace(/\/ /g, "/")
+      .replace(/\/ $/, "");
+    return extend(
+      options,
+      { path: path }
+    );
     }
 }

@@ -10,7 +10,6 @@ export class ErrorResponse {
     public readonly statusCode: number,
     public readonly headers: Headers,
     public readonly description: any) {
-
   }
 }
 
@@ -29,6 +28,7 @@ export interface RequestOptions {
 export interface AuthenticateOptions {
   userId?: string;
   serviceClaims?: any;
+  su?: boolean
 }
 
 export interface AuthenticatePayload {
