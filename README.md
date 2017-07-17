@@ -9,7 +9,7 @@ Add `pusher-platform-node` to your package.json file:
 ```json
 {
   "dependencies": {
-    "pusher-platform-node": "^0.5.0"
+    "pusher-platform-node": "^0.7.0"
   }
 }
 ```
@@ -110,3 +110,13 @@ pusherApp.request({
   }
 });
 ```
+
+## Issues, Bugs, and Feature Requests
+
+Feel free to create an issue on Github if you find anything wrong. Please use the existing template. 
+If you wish to contribute, please make a pull request. 
+To summon help you can also ping @pusher/sigsdk or @zmarkan.
+
+## License
+
+PusherSwift is released under the MIT license. See LICENSE for details.
