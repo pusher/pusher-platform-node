@@ -6,7 +6,12 @@ import Authenticator, {
   TokenWithExpiry, AuthenticationResponse, DEFAULT_TOKEN_LEEWAY
 } from "./authenticator";
 import BaseClient from "./base_client";
-import {AuthenticateOptions, RequestOptions, AuthenticatePayload} from "./common";
+import {
+  AuthenticateOptions,
+  RequestOptions,
+  AuthenticatePayload,
+  IncomingMessageWithBody
+} from "./common";
 
 const HOST_BASE = "pusherplatform.io";
 const HTTPS_PORT = 443;
@@ -71,7 +76,7 @@ export default class Instance {
     );
   }
 
-  request(options: RequestOptions): Promise<IncomingMessage> {
+  request(options: RequestOptions): Promise<IncomingMessageWithBody> {
     options = this.scopeRequestOptions(options);
     if (options.jwt == null) {
       options = extend(options, { jwt: `${this.authenticator.generateAccessToken({ su: true }).token}` });

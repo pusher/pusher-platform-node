@@ -10,5 +10,4 @@ export {
 
 export {default as BaseClient} from "./base_client";
 
-export * from "./decoders";
 export { DEFAULT_TOKEN_LEEWAY, AuthenticationResponse } from "./authenticator";
