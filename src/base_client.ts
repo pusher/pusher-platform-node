@@ -70,7 +70,7 @@ export default class BaseClient {
             resolve(response);
           }
           else if (statusCode >= 300 && statusCode <= 399) {
-            eject(new Error(`Unsupported Redirect Response: ${statusCode}`));
+            reject(new Error(`Unsupported Redirect Response: ${statusCode}`));
           } 
           else if (statusCode >= 400 && statusCode <= 599) {
             reject(new ErrorResponse(response.statusCode, response.headers,response.statusMessage));
