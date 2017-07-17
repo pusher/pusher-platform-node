@@ -1,16 +1,12 @@
 import extend = require("extend");
 import {IncomingMessage} from "http";
-import {IncomingMessageWithBody} from "./common";
 import * as jwt from "jsonwebtoken";
 
 import Authenticator, {
-  TokenWithExpiry, AuthenticationResponse, TOKEN_LEEWAY
+  TokenWithExpiry, AuthenticationResponse, DEFAULT_TOKEN_LEEWAY
 } from "./authenticator";
 import BaseClient from "./base_client";
 import {AuthenticateOptions, RequestOptions, AuthenticatePayload} from "./common";
-
-// 5 minutes should be enough for a single sudo request
-const SUPERUSER_TOKEN_EXPIRY = 60*5;
 
 const HOST_BASE = "pusherplatform.io";
 const HTTPS_PORT = 443;
@@ -76,9 +72,9 @@ export default class Instance {
   }
 
   request(options: RequestOptions): Promise<IncomingMessage> {
-    options = this.scopeRequestOptions("apps", options);
+    options = this.scopeRequestOptions(options);
     if (options.jwt == null) {
-      options = extend(options, { jwt: this.generateSuperuserJWT().jwt });
+      options = extend(options, { jwt: `${this.authenticator.generateAccessToken({ su: true }).token}` });
     }
     return this.client.request(options);
   }
@@ -90,30 +86,14 @@ export default class Instance {
   generateAccessToken(options: AuthenticateOptions): TokenWithExpiry {
     return this.authenticator.generateAccessToken(options);
   }
-  
-  generateSuperuserJWT() {
-    let now = Math.floor(Date.now() / 1000);
-    var claims = {
-      app: this.instanceId,
-      iss: this.keyId,
-      su: true,
-      iat: now - TOKEN_LEEWAY,
-      exp: now + SUPERUSER_TOKEN_EXPIRY,
-    };
 
-    return {
-      jwt: jwt.sign(claims, this.keySecret),
-      expires_in: SUPERUSER_TOKEN_EXPIRY
-    };
-  }
-
-  private scopeRequestOptions(prefix: string, options: RequestOptions): RequestOptions {
-    let path = `/${prefix}/${this.instanceId}/${options.path}`
-      .replace(/\/+/g, "/")
-      .replace(/\/+$/, "");
+  private scopeRequestOptions(options: RequestOptions): RequestOptions {
+    let path = options.path
+      .replace(/\/ /g, "/")
+      .replace(/\/ $/, "");
     return extend(
       options,
       { path: path }
     );
-  }
+    }
 }

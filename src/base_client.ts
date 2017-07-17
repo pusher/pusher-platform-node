@@ -1,10 +1,10 @@
 import extend = require("extend");
 import {IncomingMessage} from "http";
 import * as https from "https";
-import {Readable} from "stream";
-
 import {RequestOptions, ErrorResponse} from "./common";
-import {readJSON} from "./decoders";
+import * as HttpRequest from "request";
+import { format as formatURL } from "url";
+import { normalize as normalizePath } from "path";
 
 export interface BaseClientOptions {
   host: string;
@@ -31,12 +31,11 @@ export default class BaseClient {
 
   /**
    * Make a HTTPS request to a service running on Elements.
-   * It will construct a valid elements URL from its serviceName, serviceVersion and instanceId that were passed to the Instance at construction time.
+   * It will construct a valid elements URL from its serviceName, serviceVersion,
+   * and instanceId that were passed to the Instance at construction time.
    */
   request(options: RequestOptions): Promise<IncomingMessage> {
     var headers: any = {};
-    
-    let path = `services/${this.serviceName}/${this.serviceVersion}/${this.instanceId}/${options.path}`;
 
     if (options.headers) {
       for (var key in options.headers) {
@@ -47,55 +46,38 @@ export default class BaseClient {
       headers["Authorization"] = `Bearer ${options.jwt}`
     }
 
-    var sendOptions = {
-      host: this.host,
+    const host = formatURL({
+      protocol: 'https',
+      hostname: this.host,
       port: this.port,
-      method: options.method,
-      path: path,
-      headers: headers,
-    };
-    var request = https.request(sendOptions);
+      pathname: normalizePath(`services/${this.serviceName}/${this.serviceVersion}/${this.instanceId}/${options.path}`)
+    });
 
     return new Promise<IncomingMessage>(function(resolve, reject) {
-      function onRequestError(error: any) {
-        unbind();
-        reject(error);
-      }
-      function onResponse(response: IncomingMessage) {
-        unbind();
-        let statusCode = response.statusCode;
-        if (statusCode >= 200 && statusCode <= 299) {
-          resolve(response);
-        } else if (statusCode >= 300 && statusCode <= 399) {
-          reject(new Error(`Unsupported Redirect Response: ${statusCode}`));
-        } else if (statusCode >= 400 && statusCode <= 599) {
-          readJSON(response).then(function(errorDescription) {
-            reject(
-              new ErrorResponse(statusCode, response.headers, errorDescription)
-            );
-          }).catch(function(error) {
-            // FIXME we should probably return raw body
-            reject(
-              new ErrorResponse(statusCode, response.headers, undefined)
-            );
-          });
-        } else {
-          reject(new Error(`Unsupported Response Code: ${statusCode}`));
+      HttpRequest(host, {
+        body: JSON.stringify(options.body),
+        headers: headers,
+        method: options.method
+      }, (error, response, body) => {
+        if(error) {
+          reject(error);
         }
-      }
-      function unbind() {
-        request.removeListener("response", onResponse);
-        request.removeListener("error", onResponse);
-      }
+        else {
+          let statusCode = response.statusCode;
 
-      request.addListener("response", onResponse);
-      request.addListener("error", onRequestError);
-
-      if (options.body) {
-        options.body.pipe(request);
-      } else {
-        request.end();
-      }
-    });
+          if(statusCode >= 200 && statusCode <= 299) {
+            resolve(response);
+          }
+          else if (statusCode >= 300 && statusCode <= 399) {
+            reject(new Error(`Unsupported Redirect Response: ${statusCode}`));
+          }
+          else if (statusCode >= 400 && statusCode <= 599) {
+            reject(new ErrorResponse(response.statusCode, response.headers,response.statusMessage));
+          } else {
+            reject(new Error(`Unsupported Response Code: ${statusCode}`));
+          }
+        }
+      });
+  });
   }
 }
