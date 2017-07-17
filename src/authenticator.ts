@@ -1,7 +1,7 @@
 import {IncomingMessage} from "http";
 import * as jwt from 'jsonwebtoken';
 
-import {AuthenticateOptions, IncomingMessageWithBody, AuthenticatePayload} from "./common";
+import {AuthenticateOptions, AuthenticatePayload} from "./common";
 import {UnsupportedGrantTypeError, InvalidGrantTypeError} from "./errors";
 
 export const DEFAULT_TOKEN_LEEWAY = 60*10;
@@ -28,16 +28,16 @@ export interface AuthenticationResponse {
 
 export default class Authenticator {
   constructor(
-      private appId: string,
-      private appKeyId: string,
-      private appKeySecret: string,
+    private appId: string,
+    private appKeyId: string,
+    private appKeySecret: string,
 
-      //Customise token expiry and leeway
-      private tokenExpiry?: number,
-      private tokenLeeway?: number
-    ) {
-      if(!this.tokenExpiry) this.tokenExpiry = DEFAULT_TOKEN_EXPIRY;
-      if(!this.tokenLeeway) this.tokenLeeway = DEFAULT_TOKEN_LEEWAY;
+    //Customise token expiry and leeway
+    private tokenExpiry?: number,
+    private tokenLeeway?: number
+  ) {
+    if(!this.tokenExpiry) { this.tokenExpiry = DEFAULT_TOKEN_EXPIRY; }
+    if(!this.tokenLeeway) { this.tokenLeeway = DEFAULT_TOKEN_LEEWAY; }
   }
 
   authenticate(authenticatePayload: AuthenticatePayload, options: AuthenticateOptions): AuthenticationResponse {

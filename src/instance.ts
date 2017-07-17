@@ -1,6 +1,5 @@
 import extend = require("extend");
 import {IncomingMessage} from "http";
-import {IncomingMessageWithBody} from "./common";
 import * as jwt from "jsonwebtoken";
 
 import Authenticator, {
