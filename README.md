@@ -1,4 +1,4 @@
-# pusher-platform-nodejs
+# pusher-platform-node
 
 Pusher Platform SDK for Node.js.
 
@@ -119,4 +119,4 @@ To summon help you can also ping @pusher/sigsdk or @zmarkan.
 
 ## License
 
-PusherSwift is released under the MIT license. See LICENSE for details.
+pusher-platform-node is released under the MIT license. See LICENSE for details.
