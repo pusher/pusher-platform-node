@@ -9,7 +9,6 @@ export const DEFAULT_TOKEN_LEEWAY = 60*10;
 const DEFAULT_TOKEN_EXPIRY = 24*60*60;
 const CLIENT_CREDENTIALS_GRANT_TYPE = "client_credentials";
 const REFRESH_TOKEN_GRANT_TYPE = "refresh_token";
-// const SUPERUSER_TOKEN_EXPIRY = 60*5; // 5 minutes should be enough for a single sudo request
 
 export interface TokenWithExpiry {
 
