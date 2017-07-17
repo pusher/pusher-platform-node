@@ -1,6 +1,3 @@
-import {Readable} from "stream";
-import {IncomingMessage} from "http";
-
 export type Headers = {
   [key: string]: string | string[];
 };
@@ -10,12 +7,7 @@ export class ErrorResponse {
     public readonly statusCode: number,
     public readonly headers: Headers,
     public readonly description: any) {
-
   }
-}
-
-export interface IncomingMessageWithBody extends IncomingMessage {
-  body: any;
 }
 
 export interface RequestOptions {
@@ -29,6 +21,7 @@ export interface RequestOptions {
 export interface AuthenticateOptions {
   userId?: string;
   serviceClaims?: any;
+  su?: boolean
 }
 
 export interface AuthenticatePayload {

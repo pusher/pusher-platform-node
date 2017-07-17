@@ -1,9 +1,7 @@
 import extend = require("extend");
 import {IncomingMessage} from "http";
 import * as https from "https";
-import {Readable} from "stream";
 import {RequestOptions, ErrorResponse} from "./common";
-import {readJSON} from "./decoders";
 import * as HttpRequest from "request";
 import { format as formatURL } from "url";
 import { normalize as normalizePath } from "path";
@@ -33,7 +31,8 @@ export default class BaseClient {
 
   /**
    * Make a HTTPS request to a service running on Elements.
-   * It will construct a valid elements URL from its serviceName, serviceVersion and instanceId that were passed to the Instance at construction time.
+   * It will construct a valid elements URL from its serviceName, serviceVersion,
+   * and instanceId that were passed to the Instance at construction time.
    */
   request(options: RequestOptions): Promise<IncomingMessage> {
     var headers: any = {};
@@ -71,10 +70,10 @@ export default class BaseClient {
           }
           else if (statusCode >= 300 && statusCode <= 399) {
             reject(new Error(`Unsupported Redirect Response: ${statusCode}`));
-          } 
+          }
           else if (statusCode >= 400 && statusCode <= 599) {
             reject(new ErrorResponse(response.statusCode, response.headers,response.statusMessage));
-          } else { 
+          } else {
             reject(new Error(`Unsupported Response Code: ${statusCode}`));
           }
         }
