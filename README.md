@@ -111,12 +111,12 @@ pusherApp.request({
 });
 ```
 
-## Issues, Bugs, and Feature Requests
+## Issues, Bugs, and Feature Requests
 
 Feel free to create an issue on Github if you find anything wrong. Please use the existing template. 
 If you wish to contribute, please make a pull request. 
 To summon help you can also ping @pusher/sigsdk or @zmarkan.
 
-## License
+## License
 
 pusher-platform-node is released under the MIT license. See LICENSE for details.
