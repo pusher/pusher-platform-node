@@ -1,3 +1,5 @@
+import {IncomingMessage} from "http";
+
 export type Headers = {
   [key: string]: string | string[];
 };
@@ -27,4 +29,8 @@ export interface AuthenticateOptions {
 export interface AuthenticatePayload {
   grant_type?: string;
   refresh_token?: string;
+}
+
+export interface IncomingMessageWithBody extends IncomingMessage {
+  body?: any;
 }
