@@ -2,6 +2,12 @@
 
 This project adheres to [Semantic Versioning Scheme](http://semver.org)
 
+## [v0.7.1] 2017-07-18
+
+### Changes
+
+Requests now return a body as well.
+
 ## [v0.7.0] 2017-07-17
 
 ### Fixes
