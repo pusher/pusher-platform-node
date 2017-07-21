@@ -17,7 +17,7 @@ const HOST_BASE = "pusherplatform.io";
 const HTTPS_PORT = 443;
 
 export interface InstanceOptions {
-  instanceID: string;
+  instanceId: string;
   key: string;
   serviceName: string;
   serviceVersion: string;
@@ -43,12 +43,12 @@ export default class Instance {
 
   constructor(options: InstanceOptions) {
 
-    if (!options.instanceID) throw new Error('Expected `instance` property in Instance options!');
-    if (options.instanceID.split(":").length !== 3) throw new Error('The instance property is in the wrong format!');
+    if (!options.instanceId) throw new Error('Expected `instance` property in Instance options!');
+    if (options.instanceId.split(":").length !== 3) throw new Error('The instance property is in the wrong format!');
     if(!options.serviceName) throw new Error('Expected `serviceName` property in Instance options!');
     if(!options.serviceVersion) throw new Error('Expected `serviceVersion` property in Instance otpions!');
 
-    let splitInstance = options.instanceID.split(":");
+    let splitInstance = options.instanceId.split(":");
     this.platformVersion = splitInstance[0];
     this.cluster = splitInstance[1];
     this.id = splitInstance[2];

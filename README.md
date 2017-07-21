@@ -23,14 +23,14 @@ It takes the following arguments:
 var pusher = require("pusher-platform-node");
 
 var pusherPlatform = new pusher.Instance({
-  instanceID: "",
+  instanceId: "",
   serviceName: "",
   serviceVersion: "",
   key: "",
 });
 ```
 
-`instanceID` is the ID that is unique to app developers' instance - they get that from the dashboard. The service SDKs will need to relay that down. Same for the `key`.
+`instanceId` is the ID that is unique to app developers' instance - they get that from the dashboard. The service SDKs will need to relay that down. Same for the `key`.
 `serviceName` and `serviceVersion` should come from the service SDK itself. They can be hardcoded there. Think `feeds` and `v1`.
 
 It is also possible to specify `host` and `port`. This will override the cluster value that is encoded in the `instance` and allow you to connect to a development or testing server.
