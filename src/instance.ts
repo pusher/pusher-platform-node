@@ -17,7 +17,7 @@ const HOST_BASE = "pusherplatform.io";
 const HTTPS_PORT = 443;
 
 export interface InstanceOptions {
-  instance: string;
+  instanceId: string;
   key: string;
   serviceName: string;
   serviceVersion: string;
@@ -29,7 +29,7 @@ export interface InstanceOptions {
 
 export default class Instance {
   private client: BaseClient;
-  private instanceId: string;
+  private id: string;
   private serviceName: string;
   private serviceVersion: string;
   private cluster: string;
@@ -43,15 +43,15 @@ export default class Instance {
 
   constructor(options: InstanceOptions) {
 
-    if (!options.instance) throw new Error('Expected `instance` property in Instance options!');
-    if (options.instance.split(":").length !== 3) throw new Error('The instance property is in the wrong format!');
+    if (!options.instanceId) throw new Error('Expected `instance` property in Instance options!');
+    if (options.instanceId.split(":").length !== 3) throw new Error('The instance property is in the wrong format!');
     if(!options.serviceName) throw new Error('Expected `serviceName` property in Instance options!');
     if(!options.serviceVersion) throw new Error('Expected `serviceVersion` property in Instance otpions!');
 
-    let splitInstance = options.instance.split(":");
+    let splitInstance = options.instanceId.split(":");
     this.platformVersion = splitInstance[0];
     this.cluster = splitInstance[1];
-    this.instanceId = splitInstance[2];
+    this.id = splitInstance[2];
 
     this.serviceName = options.serviceName;
     this.serviceVersion = options.serviceVersion;
@@ -65,14 +65,14 @@ export default class Instance {
 
     this.client = options.client || new BaseClient({
       host: options.host || `${this.cluster}.${HOST_BASE}`,
-      instanceId: this.instanceId,
+      instanceId: this.id,
       serviceName: this.serviceName,
       serviceVersion: this.serviceVersion,
       port: options.port || HTTPS_PORT
     });
 
     this.authenticator = new Authenticator(
-      this.instanceId, this.keyId, this.keySecret
+      this.id, this.keyId, this.keySecret
     );
   }
 
