@@ -77,7 +77,6 @@ export default class Instance {
   }
 
   request(options: RequestOptions): Promise<IncomingMessageWithBody> {
-    options = this.scopeRequestOptions(options);
     if (options.jwt == null) {
       options = extend(options, { jwt: `${this.authenticator.generateAccessToken({ su: true }).token}` });
     }
@@ -91,14 +90,4 @@ export default class Instance {
   generateAccessToken(options: AuthenticateOptions): TokenWithExpiry {
     return this.authenticator.generateAccessToken(options);
   }
-
-  private scopeRequestOptions(options: RequestOptions): RequestOptions {
-    let path = options.path
-      .replace(/\/ /g, "/")
-      .replace(/\/ $/, "");
-    return extend(
-      options,
-      { path: path }
-    );
-    }
 }

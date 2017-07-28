@@ -48,11 +48,13 @@ export default class BaseClient {
       headers["Authorization"] = `Bearer ${options.jwt}`
     }
 
+    const path = this.sanitisePath(`services/${this.serviceName}/${this.serviceVersion}/${this.instanceId}/${options.path}`);
+
     const host = formatURL({
       protocol: 'https',
       hostname: this.host,
       port: this.port,
-      pathname: normalizePath(`services/${this.serviceName}/${this.serviceVersion}/${this.instanceId}/${options.path}`)
+      pathname: normalizePath(path)
     });
 
     return new Promise<IncomingMessageWithBody>((resolve, reject) => {
@@ -81,6 +83,10 @@ export default class BaseClient {
           }
         }
       });
-  });
+    });
+  }
+
+  private sanitisePath(path: string): string {
+    return path.replace(/\/ /g, "/").replace(/\/ $/, "");
   }
 }

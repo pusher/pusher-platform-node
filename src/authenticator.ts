@@ -10,7 +10,6 @@ const CLIENT_CREDENTIALS_GRANT_TYPE = "client_credentials";
 const REFRESH_TOKEN_GRANT_TYPE = "refresh_token";
 
 export interface TokenWithExpiry {
-
   token: string;
   expires_in: number;
 }
