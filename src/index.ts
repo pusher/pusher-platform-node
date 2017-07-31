@@ -10,4 +10,8 @@ export {
 
 export {default as BaseClient} from "./base_client";
 
-export { DEFAULT_TOKEN_LEEWAY, AuthenticationResponse } from "./authenticator";
+export {
+  DEFAULT_TOKEN_LEEWAY,
+  AuthenticationResponse,
+  TokenWithExpiry,
+} from "./authenticator";

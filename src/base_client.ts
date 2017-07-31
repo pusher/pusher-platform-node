@@ -6,7 +6,6 @@ import {
 } from "./common";
 import * as HttpRequest from "request";
 import { format as formatURL } from "url";
-import { normalize as normalizePath } from "path";
 
 export interface BaseClientOptions {
   host: string;
@@ -48,11 +47,13 @@ export default class BaseClient {
       headers["Authorization"] = `Bearer ${options.jwt}`
     }
 
+    const path = this.sanitizePath(`services/${this.serviceName}/${this.serviceVersion}/${this.instanceId}/${options.path}`);
+
     const host = formatURL({
       protocol: 'https',
       hostname: this.host,
       port: this.port,
-      pathname: normalizePath(`services/${this.serviceName}/${this.serviceVersion}/${this.instanceId}/${options.path}`)
+      pathname: path
     });
 
     return new Promise<IncomingMessageWithBody>((resolve, reject) => {
@@ -81,6 +82,15 @@ export default class BaseClient {
           }
         }
       });
-  });
+    });
+  }
+
+  //Cleans up the path provided
+  private sanitizePath(path: string): string {
+    return path
+      .replace(/\/ /g, "/") //Replace space after a slash
+      .replace(/ $/, "") //Remove the trailing space
+      .replace(/[\/]{2,}/g, "/") //Multiple slashes are now single slashes
+      .replace(/\/$/, ""); //Remove trailing slash
   }
 }
