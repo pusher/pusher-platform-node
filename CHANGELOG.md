@@ -2,16 +2,24 @@
 
 This project adheres to [Semantic Versioning Scheme](http://semver.org)
 
+## [v0.8.1] 2017-08-02
+
+### Changes
+
+- Move path sanitization logic all to the `BaseClient`.
+- `TokenWithExpiry` is now an exported interface.
+
 ## [v0.8.0] 2017-07-19
 
 ### Changes
-- Renamed the `instance` to `instanceId` when instantiating an `Instance`. `Instance` class now has a parameter `id` that used to be `instance`. 
+
+- Renamed the `instance` to `instanceId` when instantiating an `Instance`. `Instance` class now has a parameter `id` that used to be `instance`.
 
 ## [v0.7.1] 2017-07-18
 
 ### Changes
 
-Requests now return a body as well.
+- Requests now return a body as well.
 
 ## [v0.7.0] 2017-07-17
 
