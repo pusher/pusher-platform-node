@@ -18,6 +18,7 @@ export interface RequestOptions {
   jwt?: string;
   headers?: Headers;
   body?: any;
+  qs?: object;
 }
 
 export interface AuthenticateOptions {
