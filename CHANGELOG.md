@@ -2,6 +2,12 @@
 
 This project adheres to [Semantic Versioning Scheme](http://semver.org)
 
+## [v0.8.2] 2017-08-04
+
+### Changes
+
+- Added support for query params in `RequestOptions` (pass in an object undert the `qs` key)
+
 ## [v0.8.1] 2017-08-02
 
 ### Changes
