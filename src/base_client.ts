@@ -60,7 +60,8 @@ export default class BaseClient {
       HttpRequest(host, {
         body: JSON.stringify(options.body),
         headers: headers,
-        method: options.method
+        method: options.method,
+        qs: options.qs
       }, (error, response, body) => {
         if(error) {
           reject(error);
