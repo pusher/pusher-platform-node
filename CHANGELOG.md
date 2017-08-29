@@ -2,6 +2,12 @@
 
 This project adheres to [Semantic Versioning Scheme](http://semver.org)
 
+## [v0.8.3] 2017-08-29
+
+### Changes
+
+- Corrected the error when instantiating the library - it now says it requires `instanceId` instead of `instance` field.
+
 ## [v0.8.2] 2017-08-04
 
 ### Changes
