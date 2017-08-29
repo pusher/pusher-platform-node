@@ -43,8 +43,8 @@ export default class Instance {
 
   constructor(options: InstanceOptions) {
 
-    if (!options.instanceId) throw new Error('Expected `instance` property in Instance options!');
-    if (options.instanceId.split(":").length !== 3) throw new Error('The instance property is in the wrong format!');
+    if (!options.instanceId) throw new Error('Expected `instanceId` property in Instance options!');
+    if (options.instanceId.split(":").length !== 3) throw new Error('The `instanceId` property is in the wrong format!');
     if(!options.serviceName) throw new Error('Expected `serviceName` property in Instance options!');
     if(!options.serviceVersion) throw new Error('Expected `serviceVersion` property in Instance otpions!');
 
