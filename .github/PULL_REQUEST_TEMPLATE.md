@@ -2,15 +2,17 @@
 
 ...
 
-#### Why?
+### Why?
 
 ...
 
-#### How?
+### How?
 
 ...
 
-### Please make sure to update the README if you changed the API.
+----
+
+- [ ] README updated if you changed the API?
 
 ----
 
