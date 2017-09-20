@@ -104,7 +104,9 @@ pusherApp.request({
   if (e instanceof pusher.ErrorResponse) {
     console.log(e.statusCode);
     console.log(e.headers);
-    console.log(e.description);
+    console.log(e.error_type);
+    console.log(e.error_description);
+    console.log(e.error_uri);
   } else {
     console.log(e);
   }
