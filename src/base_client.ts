@@ -77,7 +77,14 @@ export default class BaseClient {
             reject(new Error(`Unsupported Redirect Response: ${statusCode}`));
           }
           else if (statusCode >= 400 && statusCode <= 599) {
-            reject(new ErrorResponse(response.statusCode, response.headers,response.statusMessage));
+            const errJson = JSON.parse(body);
+            reject(new ErrorResponse(
+              response.statusCode,
+              response.headers,
+              errJson.error,
+              errJson.error_description,
+              errJson.error_uri,
+             ));
           } else {
             reject(new Error(`Unsupported Response Code: ${statusCode}`));
           }

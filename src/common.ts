@@ -8,8 +8,10 @@ export class ErrorResponse {
   constructor(
     public readonly statusCode: number,
     public readonly headers: Headers,
-    public readonly description: any) {
-  }
+    public readonly error_type: string,
+    public readonly error_description: string,
+    public readonly error_uri?: string,
+  ) {}
 }
 
 export interface RequestOptions {
