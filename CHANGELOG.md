@@ -2,6 +2,18 @@
 
 This project adheres to [Semantic Versioning Scheme](http://semver.org)
 
+## [v0.10.0] 2017-10-27
+
+### Changes
+
+- When instantiating an `Instance` you now provide a `locator` instead of an `instanceId`.
+
+## [v0.9.0] 2017-09-20
+
+### Changes
+
+- Error responses now provide more information
+
 ## [v0.8.3] 2017-08-29
 
 ### Changes
