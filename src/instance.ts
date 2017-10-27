@@ -17,7 +17,7 @@ const HOST_BASE = "pusherplatform.io";
 const HTTPS_PORT = 443;
 
 export interface InstanceOptions {
-  instanceId: string;
+  locator: string;
   key: string;
   serviceName: string;
   serviceVersion: string;
@@ -43,12 +43,12 @@ export default class Instance {
 
   constructor(options: InstanceOptions) {
 
-    if (!options.instanceId) throw new Error('Expected `instanceId` property in Instance options!');
-    if (options.instanceId.split(":").length !== 3) throw new Error('The `instanceId` property is in the wrong format!');
+    if (!options.locator) throw new Error('Expected `locator` property in Instance options!');
+    if (options.locator.split(":").length !== 3) throw new Error('The `locator` property is in the wrong format!');
     if(!options.serviceName) throw new Error('Expected `serviceName` property in Instance options!');
     if(!options.serviceVersion) throw new Error('Expected `serviceVersion` property in Instance otpions!');
 
-    let splitInstance = options.instanceId.split(":");
+    let splitInstance = options.locator.split(":");
     this.platformVersion = splitInstance[0];
     this.cluster = splitInstance[1];
     this.id = splitInstance[2];

@@ -1,7 +1,7 @@
 var PusherPlatform = require('../target/index');
 
 var pusher = new PusherPlatform.Instance({
-  instanceId: 'your:instance:id',
+  locator: 'your:instance:locator',
   key: 'your:key',
   serviceName: 'yourServiceName',
   serviceVersion: 'v1'
