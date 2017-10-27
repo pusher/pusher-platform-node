@@ -43,7 +43,7 @@ export default class Instance {
 
   constructor(options: InstanceOptions) {
 
-    if (!options.locator) throw new Error('Expected `locator` property in Instance options!');
+    if (!options.locator) throw new Error('Expected `instanceLocator` property in Instance options!');
     if (options.locator.split(":").length !== 3) throw new Error('The `locator` property is in the wrong format!');
     if(!options.serviceName) throw new Error('Expected `serviceName` property in Instance options!');
     if(!options.serviceVersion) throw new Error('Expected `serviceVersion` property in Instance otpions!');
