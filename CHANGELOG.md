@@ -8,6 +8,12 @@ This project adheres to [Semantic Versioning Scheme](http://semver.org)
 - Added support for custom token expiry with a `tokenExpiry` key in `AuthenticateOptions`
 - Removed all mention of `tokenLeeway`
 
+## Unreleased
+
+### Changes
+
+- Tokens now use `instance` claim instead of `app` claim
+
 ## [v0.10.0] 2017-10-27
 
 ### Changes
