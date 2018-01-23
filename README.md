@@ -35,7 +35,7 @@ var pusherPlatform = new pusher.Instance({
 
 It is also possible to specify `host` and `port`. This will override the cluster value that is encoded in the `instance` and allow you to connect to a development or testing server.
 
-### Authetication
+### Authentication
 
 Instance objects provide an `authenticate` method, which can be used in controllers
 to build authentication endpoints. Authentication endpoints issue access tokens
@@ -80,6 +80,20 @@ let = authResponse: {
   expires_in: 20000;
   refresh_token: 'cvbccvbb'
 }
+```
+
+Custom `tokenExpiry` and `tokenLeeway` values can be set by including the relevant keys in the `authOptions` object.
+
+```
+let authOptions = {
+  userId: 'zan',
+  serviceClaims: {
+    claim1: 'sdsdsd'
+    ...
+  }
+  tokenExpiry: (10 * 60),
+  tokenLeeway: (5 * 60)
+};
 ```
 
 ### Request API

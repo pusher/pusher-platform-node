@@ -56,22 +56,25 @@ export default class Authenticator {
   private authenticateWithClientCredentials(options: AuthenticateOptions): AuthenticationResponse {
     let {token} = this.generateAccessToken(options);
     let refreshToken = this.generateRefreshToken(options);
+    let tokenExpiry = options.tokenExpiry || this.tokenExpiry;
 
     return {
       access_token: token,
       token_type: "bearer",
-      expires_in: this.tokenExpiry,
+      expires_in: tokenExpiry,
       refresh_token: refreshToken.token,
     };
   }
 
   private authenticateWithRefreshToken(oldRefreshToken: string, options: AuthenticateOptions): AuthenticationResponse {
       let decoded: any;
+      let tokenExpiry = options.tokenExpiry || this.tokenExpiry;
+      let tokenLeeway = options.tokenLeeway || this.tokenLeeway;
 
       try {
         decoded = jwt.verify(oldRefreshToken, this.appKeySecret, {
           issuer: `keys/${this.appKeyId}`,
-          clockTolerance: this.tokenLeeway,
+          clockTolerance: tokenLeeway,
         });
       } catch (e) {
         let description: string = (e instanceof jwt.TokenExpiredError) ? "refresh token has expired" : "refresh token is invalid";
@@ -92,19 +95,21 @@ export default class Authenticator {
       return {
         access_token: newAccessToken,
         token_type: "bearer",
-        expires_in: this.tokenExpiry,
+        expires_in: tokenExpiry,
         refresh_token: newRefreshToken.token,
       };
   }
 
   generateAccessToken(options: AuthenticateOptions): TokenWithExpiry {
     let now = Math.floor(Date.now() / 1000);
+    let tokenExpiry = options.tokenExpiry || this.tokenExpiry;
+    let tokenLeeway = options.tokenLeeway || this.tokenLeeway;
 
     let claims = {
       app: this.appId,
       iss: `api_keys/${this.appKeyId}`,
-      iat: now - this.tokenLeeway,
-      exp: now + this.tokenExpiry - this.tokenLeeway,
+      iat: now - tokenLeeway,
+      exp: now + tokenExpiry - tokenLeeway,
       sub: options.userId,
       su: options.su,
       ...options.serviceClaims
@@ -112,17 +117,18 @@ export default class Authenticator {
 
     return {
       token: jwt.sign(claims, this.appKeySecret),
-      expires_in: this.tokenExpiry,
+      expires_in: tokenExpiry,
     };
   }
 
   private generateRefreshToken(options: AuthenticateOptions): RefreshToken {
     let now = Math.floor(Date.now() / 1000);
+    let tokenLeeway = options.tokenLeeway || this.tokenLeeway;
 
     let claims = {
       app: this.appId,
       iss: `api_keys/${this.appKeyId}`,
-      iat: now - this.tokenLeeway,
+      iat: now - tokenLeeway,
       refresh: true,
       sub: options.userId,
     };
