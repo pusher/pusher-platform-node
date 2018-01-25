@@ -28,7 +28,6 @@ export interface AuthenticateOptions {
   serviceClaims?: any;
   su?: boolean
   tokenExpiry?: number;
-  tokenLeeway?: number;
 }
 
 export interface AuthenticatePayload {
