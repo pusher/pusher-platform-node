@@ -4,7 +4,6 @@ import * as jwt from 'jsonwebtoken';
 import {AuthenticateOptions, AuthenticatePayload} from "./common";
 import {UnsupportedGrantTypeError, InvalidGrantTypeError} from "./errors";
 
-export const DEFAULT_TOKEN_LEEWAY = 60*10;
 const DEFAULT_TOKEN_EXPIRY = 24*60*60;
 const CLIENT_CREDENTIALS_GRANT_TYPE = "client_credentials";
 const REFRESH_TOKEN_GRANT_TYPE = "refresh_token";
@@ -31,12 +30,10 @@ export default class Authenticator {
     private appKeyId: string,
     private appKeySecret: string,
 
-    //Customise token expiry and leeway
+    //Customise token expiry
     private tokenExpiry?: number,
-    private tokenLeeway?: number
   ) {
     if(!this.tokenExpiry) { this.tokenExpiry = DEFAULT_TOKEN_EXPIRY; }
-    if(!this.tokenLeeway) { this.tokenLeeway = DEFAULT_TOKEN_LEEWAY; }
   }
 
   authenticate(authenticatePayload: AuthenticatePayload, options: AuthenticateOptions): AuthenticationResponse {
@@ -69,12 +66,10 @@ export default class Authenticator {
   private authenticateWithRefreshToken(oldRefreshToken: string, options: AuthenticateOptions): AuthenticationResponse {
       let decoded: any;
       let tokenExpiry = options.tokenExpiry || this.tokenExpiry;
-      let tokenLeeway = options.tokenLeeway || this.tokenLeeway;
 
       try {
         decoded = jwt.verify(oldRefreshToken, this.appKeySecret, {
           issuer: `keys/${this.appKeyId}`,
-          clockTolerance: tokenLeeway,
         });
       } catch (e) {
         let description: string = (e instanceof jwt.TokenExpiredError) ? "refresh token has expired" : "refresh token is invalid";
@@ -103,13 +98,12 @@ export default class Authenticator {
   generateAccessToken(options: AuthenticateOptions): TokenWithExpiry {
     let now = Math.floor(Date.now() / 1000);
     let tokenExpiry = options.tokenExpiry || this.tokenExpiry;
-    let tokenLeeway = options.tokenLeeway || this.tokenLeeway;
 
     let claims = {
       app: this.appId,
       iss: `api_keys/${this.appKeyId}`,
-      iat: now - tokenLeeway,
-      exp: now + tokenExpiry - tokenLeeway,
+      iat: now,
+      exp: now + tokenExpiry,
       sub: options.userId,
       su: options.su,
       ...options.serviceClaims
@@ -123,12 +117,11 @@ export default class Authenticator {
 
   private generateRefreshToken(options: AuthenticateOptions): RefreshToken {
     let now = Math.floor(Date.now() / 1000);
-    let tokenLeeway = options.tokenLeeway || this.tokenLeeway;
 
     let claims = {
       app: this.appId,
       iss: `api_keys/${this.appKeyId}`,
-      iat: now - tokenLeeway,
+      iat: now,
       refresh: true,
       sub: options.userId,
     };

@@ -82,7 +82,7 @@ let = authResponse: {
 }
 ```
 
-Custom `tokenExpiry` and `tokenLeeway` values can be set by including the relevant keys in the `authOptions` object.
+A custom token expiry value can be set by including a `tokenExpiry` key in the `authOptions` object.
 
 ```
 let authOptions = {
@@ -92,7 +92,6 @@ let authOptions = {
     ...
   }
   tokenExpiry: (10 * 60),
-  tokenLeeway: (5 * 60)
 };
 ```
 
