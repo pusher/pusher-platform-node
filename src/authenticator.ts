@@ -4,7 +4,6 @@ import * as jwt from 'jsonwebtoken';
 import {AuthenticateOptions, AuthenticatePayload} from "./common";
 import {UnsupportedGrantTypeError, InvalidGrantTypeError} from "./errors";
 
-export const DEFAULT_TOKEN_LEEWAY = 60*10;
 const DEFAULT_TOKEN_EXPIRY = 24*60*60;
 const CLIENT_CREDENTIALS_GRANT_TYPE = "client_credentials";
 const REFRESH_TOKEN_GRANT_TYPE = "refresh_token";
@@ -31,12 +30,10 @@ export default class Authenticator {
     private appKeyId: string,
     private appKeySecret: string,
 
-    //Customise token expiry and leeway
+    //Customise token expiry
     private tokenExpiry?: number,
-    private tokenLeeway?: number
   ) {
     if(!this.tokenExpiry) { this.tokenExpiry = DEFAULT_TOKEN_EXPIRY; }
-    if(!this.tokenLeeway) { this.tokenLeeway = DEFAULT_TOKEN_LEEWAY; }
   }
 
   authenticate(authenticatePayload: AuthenticatePayload, options: AuthenticateOptions): AuthenticationResponse {
@@ -56,22 +53,23 @@ export default class Authenticator {
   private authenticateWithClientCredentials(options: AuthenticateOptions): AuthenticationResponse {
     let {token} = this.generateAccessToken(options);
     let refreshToken = this.generateRefreshToken(options);
+    let tokenExpiry = options.tokenExpiry || this.tokenExpiry;
 
     return {
       access_token: token,
       token_type: "bearer",
-      expires_in: this.tokenExpiry,
+      expires_in: tokenExpiry,
       refresh_token: refreshToken.token,
     };
   }
 
   private authenticateWithRefreshToken(oldRefreshToken: string, options: AuthenticateOptions): AuthenticationResponse {
       let decoded: any;
+      let tokenExpiry = options.tokenExpiry || this.tokenExpiry;
 
       try {
         decoded = jwt.verify(oldRefreshToken, this.appKeySecret, {
           issuer: `keys/${this.appKeyId}`,
-          clockTolerance: this.tokenLeeway,
         });
       } catch (e) {
         let description: string = (e instanceof jwt.TokenExpiredError) ? "refresh token has expired" : "refresh token is invalid";
@@ -92,19 +90,20 @@ export default class Authenticator {
       return {
         access_token: newAccessToken,
         token_type: "bearer",
-        expires_in: this.tokenExpiry,
+        expires_in: tokenExpiry,
         refresh_token: newRefreshToken.token,
       };
   }
 
   generateAccessToken(options: AuthenticateOptions): TokenWithExpiry {
     let now = Math.floor(Date.now() / 1000);
+    let tokenExpiry = options.tokenExpiry || this.tokenExpiry;
 
     let claims = {
       app: this.appId,
       iss: `api_keys/${this.appKeyId}`,
-      iat: now - this.tokenLeeway,
-      exp: now + this.tokenExpiry - this.tokenLeeway,
+      iat: now,
+      exp: now + tokenExpiry,
       sub: options.userId,
       su: options.su,
       ...options.serviceClaims
@@ -112,7 +111,7 @@ export default class Authenticator {
 
     return {
       token: jwt.sign(claims, this.appKeySecret),
-      expires_in: this.tokenExpiry,
+      expires_in: tokenExpiry,
     };
   }
 
@@ -122,7 +121,7 @@ export default class Authenticator {
     let claims = {
       app: this.appId,
       iss: `api_keys/${this.appKeyId}`,
-      iat: now - this.tokenLeeway,
+      iat: now,
       refresh: true,
       sub: options.userId,
     };
