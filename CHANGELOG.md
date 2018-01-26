@@ -1,6 +1,12 @@
 # Change Log
 
 This project adheres to [Semantic Versioning Scheme](http://semver.org)
+## [v0.11.0] 2018-01-26
+
+### Changes
+
+- Added support for custom token expiry with a `tokenExpiry` key in `AuthenticateOptions`
+- Removed all mention of `tokenLeeway`
 
 ## [v0.10.0] 2017-10-27
 
