@@ -1,6 +1,6 @@
 {
   "name": "pusher-platform-node",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "main": "./target/index.js",
   "types": "./target/index.d.ts",
   "dependencies": {
