@@ -3,7 +3,7 @@ import {IncomingMessage} from "http";
 import * as jwt from "jsonwebtoken";
 
 import Authenticator, {
-  TokenWithExpiry, AuthenticationResponse, DEFAULT_TOKEN_LEEWAY
+  TokenWithExpiry, AuthenticationResponse
 } from "./authenticator";
 import BaseClient from "./base_client";
 import {

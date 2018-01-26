@@ -27,6 +27,7 @@ export interface AuthenticateOptions {
   userId?: string;
   serviceClaims?: any;
   su?: boolean
+  tokenExpiry?: number;
 }
 
 export interface AuthenticatePayload {
