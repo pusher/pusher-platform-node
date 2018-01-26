@@ -1,6 +1,13 @@
 # Change Log
 
 This project adheres to [Semantic Versioning Scheme](http://semver.org)
+
+## Unreleased
+
+### Changes
+
+- Tokens now use `instance` claim instead of `app` claim
+
 ## [v0.11.0] 2018-01-26
 
 ### Changes
