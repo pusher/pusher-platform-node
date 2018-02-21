@@ -26,9 +26,9 @@ export interface AuthenticationResponse {
 
 export default class Authenticator {
   constructor(
-    private appId: string,
-    private appKeyId: string,
-    private appKeySecret: string,
+    private instanceId: string,
+    private instanceKeyId: string,
+    private instanceKeySecret: string,
 
     //Customise token expiry
     private tokenExpiry?: number,
@@ -68,8 +68,8 @@ export default class Authenticator {
       let tokenExpiry = options.tokenExpiry || this.tokenExpiry;
 
       try {
-        decoded = jwt.verify(oldRefreshToken, this.appKeySecret, {
-          issuer: `keys/${this.appKeyId}`,
+        decoded = jwt.verify(oldRefreshToken, this.instanceKeySecret, {
+          issuer: `keys/${this.instanceKeyId}`,
         });
       } catch (e) {
         let description: string = (e instanceof jwt.TokenExpiredError) ? "refresh token has expired" : "refresh token is invalid";
@@ -100,8 +100,8 @@ export default class Authenticator {
     let tokenExpiry = options.tokenExpiry || this.tokenExpiry;
 
     let claims = {
-      app: this.appId,
-      iss: `api_keys/${this.appKeyId}`,
+      instance: this.instanceId,
+      iss: `api_keys/${this.instanceKeyId}`,
       iat: now,
       exp: now + tokenExpiry,
       sub: options.userId,
@@ -110,7 +110,7 @@ export default class Authenticator {
     };
 
     return {
-      token: jwt.sign(claims, this.appKeySecret),
+      token: jwt.sign(claims, this.instanceKeySecret),
       expires_in: tokenExpiry,
     };
   }
@@ -119,15 +119,15 @@ export default class Authenticator {
     let now = Math.floor(Date.now() / 1000);
 
     let claims = {
-      app: this.appId,
-      iss: `api_keys/${this.appKeyId}`,
+      instance: this.instanceId,
+      iss: `api_keys/${this.instanceKeyId}`,
       iat: now,
       refresh: true,
       sub: options.userId,
     };
 
     return {
-      token: jwt.sign(claims, this.appKeySecret),
+      token: jwt.sign(claims, this.instanceKeySecret),
     };
   }
 }
