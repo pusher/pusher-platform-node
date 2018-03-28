@@ -1,16 +1,24 @@
-export {IncomingMessage as IncomingMessage} from "http";
+export { IncomingMessage as IncomingMessage } from 'http';
 
-export {ErrorResponse, AuthenticateOptions} from "./common";
-export {UnsupportedGrantTypeError, InvalidGrantTypeError} from './errors';
+export {
+  AuthenticateOptions,
+  AuthenticatePayload,
+  ErrorResponse,
+} from './common';
+
+export {
+  InvalidGrantTypeError,
+  UnsupportedGrantTypeError,
+} from './errors';
 
 export {
   default as Instance,
   InstanceOptions
-} from "./instance";
+} from './instance';
 
-export {default as BaseClient} from "./base_client";
+export { default as BaseClient } from './base_client';
 
 export {
   AuthenticationResponse,
   TokenWithExpiry,
-} from "./authenticator";
+} from './authenticator';
