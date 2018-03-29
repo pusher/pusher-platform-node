@@ -47,7 +47,7 @@ Make sure you authenticate the user before issuing access tokens.
 
 ```js
 type AuthenticatePayload {
-  grant_type?: string;
+  grant_type: string;
   refresh_token?: string;
 };
 ```

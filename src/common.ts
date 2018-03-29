@@ -31,7 +31,7 @@ export interface AuthenticateOptions {
 }
 
 export interface AuthenticatePayload {
-  grant_type?: string;
+  grant_type: string;
   refresh_token?: string;
 }
 
