@@ -23,7 +23,7 @@ Nothing, yet.
 
 ### Changes
 
-- When instantiating an `Instance` you now provide a `locator` instead of an `instanceId`.
+- When instantiating an `Instance` you now provide a `locator` instead of an `instanceId`
 
 ## [v0.9.0] 2017-09-20
 
@@ -35,7 +35,7 @@ Nothing, yet.
 
 ### Changes
 
-- Corrected the error when instantiating the library - it now says it requires `instanceId` instead of `instance` field.
+- Corrected the error when instantiating the library - it now says it requires `instanceId` instead of `instance` field
 
 ## [v0.8.2] 2017-08-04
 
@@ -47,30 +47,31 @@ Nothing, yet.
 
 ### Changes
 
-- Move path sanitization logic all to the `BaseClient`.
+- Move path sanitization logic all to the `BaseClient`
 - `TokenWithExpiry` is now an exported interface.
 
 ## [v0.8.0] 2017-07-19
 
 ### Changes
 
-- Renamed the `instance` to `instanceId` when instantiating an `Instance`. `Instance` class now has a parameter `id` that used to be `instance`.
+- Renamed the `instance` to `instanceId` when instantiating an `Instance`
+- `Instance` class now has a parameter `id` that used to be `instance`
 
 ## [v0.7.1] 2017-07-18
 
 ### Changes
 
-- Requests now return a body as well.
+- Requests now return a body as well
 
 ## [v0.7.0] 2017-07-17
 
 ### Fixes
 
-- Fixed the issue with path - requests now work again.
+- Fixed the issue with path - requests now work again
 
 ### Changes
 
-- Removed `generateSuperUserJWT` in `Instance`.
+- Removed `generateSuperUserJWT` in `Instance`
 - Allow `Authenticator` to take in custom `tokenExpiry` and `tokenLeeway` - for SuperUser requests
 - Rename exported `TOKEN_EXPIRY` to `DEFAULT_TOKEN_EXPIRY`
 
@@ -85,7 +86,7 @@ Nothing, yet.
 ### Changes
 
 - Changed the artifact name to `pusher-platform-node`
-- Renamed `App` to `Instance`, `appId` to `instanceId`.
+- Renamed `App` to `Instance`, `appId` to `instanceId`
 - Updated the tenancy to the upcoming standard: https://cluster.and.host/services/serviceName/serviceVersion/instanceId/...
 
 
