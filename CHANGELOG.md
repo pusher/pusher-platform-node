@@ -6,6 +6,13 @@ This project adheres to [Semantic Versioning Scheme](http://semver.org)
 
 Nothing, yet.
 
+## [v0.12.0] 2018-03-29
+
+### Changes
+
+- `grant_type` is now required in `AuthenticatePayload`
+- `AuthenticatePayload` is now exported from `index.js`
+
 ## [v0.11.1] 2018-01-26
 
 ### Changes
