@@ -6,6 +6,12 @@ This project adheres to [Semantic Versioning Scheme](http://semver.org)
 
 Nothing, yet.
 
+## [v0.12.1] 2018-04-05
+
+### Fixes
+
+- Issuer check in refresh token validation now checks that the issuer starts with `api_keys/`, not `keys/`
+
 ## [v0.12.0] 2018-03-29
 
 ### Changes
