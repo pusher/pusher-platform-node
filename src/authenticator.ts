@@ -69,7 +69,7 @@ export default class Authenticator {
 
       try {
         decoded = jwt.verify(oldRefreshToken, this.instanceKeySecret, {
-          issuer: `keys/${this.instanceKeyId}`,
+          issuer: `api_keys/${this.instanceKeyId}`,
         });
       } catch (e) {
         let description: string = (e instanceof jwt.TokenExpiredError) ? "refresh token has expired" : "refresh token is invalid";
