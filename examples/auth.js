@@ -12,13 +12,10 @@ var pusher = new PusherPlatform.Instance({
 
 var app = express();
 
-app.post('/', bodyParser.urlencoded(), function (req, res) {
-  try {
-    const data = pusher.authenticate(req.body, {});
-    res.send(data);
-  } catch (err) {
-    res.send('AuthError: ' + err.message);
-  }
+app.post('/', bodyParser.urlencoded({ extended: true }), function (req, res) {
+  const data = pusher.authenticate(req.body, {});
+  console.log(data);
+  res.send(data);
 });
 
 app.listen(3000, function () {
