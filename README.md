@@ -115,9 +115,9 @@ pusherApp.request({
   console.log(body);
 }).catch(function(e) {
   if (e instanceof pusher.ErrorResponse) {
-    console.log(e.statusCode);
+    console.log(e.status);
     console.log(e.headers);
-    console.log(e.error_type);
+    console.log(e.error);
     console.log(e.error_description);
     console.log(e.error_uri);
   } else {
