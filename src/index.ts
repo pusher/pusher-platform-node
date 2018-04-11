@@ -7,11 +7,6 @@ export {
 } from './common';
 
 export {
-  InvalidGrantTypeError,
-  UnsupportedGrantTypeError,
-} from './errors';
-
-export {
   default as Instance,
   InstanceOptions
 } from './instance';

@@ -5,13 +5,25 @@ export type Headers = {
 };
 
 export class ErrorResponse {
-  constructor(
-    public readonly statusCode: number,
-    public readonly headers: Headers,
-    public readonly error_type: string,
-    public readonly error_description: string,
-    public readonly error_uri?: string,
-  ) {}
+  readonly status: number;
+  readonly headers: Headers;
+  readonly error: string;
+  readonly error_description: string;
+  readonly error_uri?: string;
+
+  constructor(options: {
+    status: number,
+    headers?: Headers,
+    error: string,
+    error_description: string,
+    error_uri?: string,
+  }) {
+    this.status = options.status;
+    this.headers = options.headers || {};
+    this.error = options.error;
+    this.error_description = options.error_description;
+    this.error_uri = options.error_uri;
+  }
 }
 
 export interface RequestOptions {

@@ -78,13 +78,15 @@ export default class BaseClient {
           }
           else if (statusCode >= 400 && statusCode <= 599) {
             const errJson = JSON.parse(body);
-            reject(new ErrorResponse(
-              response.statusCode,
-              response.headers,
-              errJson.error,
-              errJson.error_description,
-              errJson.error_uri,
-             ));
+            const { statusCode, headers } = response;
+            const { error, error_description, error_uri } = errJson;
+            reject(new ErrorResponse({
+              error,
+              error_description,
+              error_uri,
+              headers,
+              status: statusCode,
+            }));
           } else {
             reject(new Error(`Unsupported Response Code: ${statusCode}`));
           }
