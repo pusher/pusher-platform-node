@@ -3,6 +3,7 @@ export { IncomingMessage as IncomingMessage } from 'http';
 export {
   AuthenticateOptions,
   AuthenticatePayload,
+  AuthenticationResponse,
   ErrorResponse,
 } from './common';
 
@@ -13,7 +14,4 @@ export {
 
 export { default as BaseClient } from './base_client';
 
-export {
-  AuthenticationResponse,
-  TokenWithExpiry,
-} from './authenticator';
+export { TokenWithExpiry } from './authenticator';

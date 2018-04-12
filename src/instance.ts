@@ -2,14 +2,13 @@ import extend = require('extend');
 import { IncomingMessage } from 'http';
 import * as jwt from 'jsonwebtoken';
 
-import Authenticator, {
-  TokenWithExpiry, AuthenticationResponse
-} from './authenticator';
+import Authenticator, { TokenWithExpiry } from './authenticator';
 import BaseClient from './base_client';
 import {
   AuthenticateOptions,
-  RequestOptions,
   AuthenticatePayload,
+  AuthenticationResponse,
+  RequestOptions,
   IncomingMessageWithBody,
   ErrorResponse,
 } from './common';
@@ -84,7 +83,7 @@ export default class Instance {
     return this.client.request(options);
   }
 
-  authenticate(authenticatePayload: AuthenticatePayload, options: AuthenticateOptions): AuthenticationResponse | ErrorResponse {
+  authenticate(authenticatePayload: AuthenticatePayload, options: AuthenticateOptions): AuthenticationResponse {
     return this.authenticator.authenticate(authenticatePayload, options);
   }
 

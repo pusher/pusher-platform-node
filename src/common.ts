@@ -4,6 +4,29 @@ export type Headers = {
   [key: string]: string | string[];
 };
 
+export interface TokenResponse {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+  refresh_token: string;
+}
+
+export class AuthenticationResponse {
+  readonly status: number;
+  readonly headers: Headers;
+  readonly body: TokenResponse | ErrorResponse;
+
+  constructor(options: {
+    status: number,
+    headers?: Headers,
+    body: TokenResponse | ErrorResponse,
+  }) {
+    this.status = options.status;
+    this.headers = options.headers || {};
+    this.body = options.body;
+  }
+}
+
 export class ErrorResponse {
   readonly status: number;
   readonly headers: Headers;
