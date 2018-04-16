@@ -5,7 +5,7 @@ import {
   AuthenticateOptions,
   AuthenticatePayload,
   AuthenticationResponse,
-  ErrorResponse,
+  ErrorBody,
   TokenResponse,
 } from './common';
 
@@ -37,41 +37,61 @@ export default class Authenticator {
   authenticate(authenticatePayload: AuthenticatePayload, options: AuthenticateOptions): AuthenticationResponse {
     let grantType = authenticatePayload['grant_type'];
 
+    if (grantType !== CLIENT_CREDENTIALS_GRANT_TYPE) {
+      return new AuthenticationResponse({
+        status: 422,
+        body: {
+          error: 'invalid_grant_type',
+          error_description: `The grant_type provided, ${grantType}, is unsupported`,
+        }
+      })
+    }
+
+    return this.authenticateUsingClientCredentials(options);
+  }
+
+  authenticateWithRefreshToken(authenticatePayload: AuthenticatePayload, options: AuthenticateOptions): AuthenticationResponse {
+    let grantType = authenticatePayload['grant_type'];
+
     switch (grantType) {
       case CLIENT_CREDENTIALS_GRANT_TYPE:
-        return this.authenticateWithClientCredentials(options);
+        return this.authenticateUsingClientCredentials(options, true);
       case REFRESH_TOKEN_GRANT_TYPE:
         let oldRefreshToken = authenticatePayload[REFRESH_TOKEN_GRANT_TYPE];
-        return this.authenticateWithRefreshToken(oldRefreshToken, options);
+        return this.authenticateUsingRefreshToken(oldRefreshToken, options);
       default:
         return new AuthenticationResponse({
           status: 422,
-          body: new ErrorResponse({
-            status: 401,
+          body: {
             error: 'invalid_grant_type',
             error_description: `The grant_type provided, ${grantType}, is unsupported`,
-          })
+          }
         })
     }
   }
 
-  private authenticateWithClientCredentials(options: AuthenticateOptions): AuthenticationResponse {
-    let {token} = this.generateAccessToken(options);
-    let refreshToken = this.generateRefreshToken(options);
+  private authenticateUsingClientCredentials(options: AuthenticateOptions, withRefreshToken = false): AuthenticationResponse {
+    let { token } = this.generateAccessToken(options);
     let tokenExpiry = options.tokenExpiry || this.tokenExpiry;
+
+    let body: TokenResponse = {
+      access_token: token,
+      expires_in: tokenExpiry,
+      token_type: 'bearer',
+    }
+
+    if (withRefreshToken) {
+      let refreshToken = this.generateRefreshToken(options);
+      body['refresh_token'] = refreshToken.token;
+    }
 
     return new AuthenticationResponse({
       status: 200,
-      body: {
-        access_token: token,
-        token_type: "bearer",
-        expires_in: tokenExpiry,
-        refresh_token: refreshToken.token,
-      }
+      body
     })
   }
 
-  private authenticateWithRefreshToken(oldRefreshToken: string, options: AuthenticateOptions): AuthenticationResponse {
+  private authenticateUsingRefreshToken(oldRefreshToken: string, options: AuthenticateOptions): AuthenticationResponse {
       let decoded: any;
       let tokenExpiry = options.tokenExpiry || this.tokenExpiry;
 
@@ -84,33 +104,30 @@ export default class Authenticator {
 
         return new AuthenticationResponse({
           status: 401,
-          body: new ErrorResponse({
-            status: 401,
+          body: {
             error: 'invalid_refresh_token',
             error_description: description,
-          })
+          }
         })
       }
 
       if (decoded.refresh !== true) {
         return new AuthenticationResponse({
           status: 401,
-          body: new ErrorResponse({
-            status: 401,
+          body: {
             error: 'invalid_refresh_token',
             error_description: 'Refresh token does not have a refresh claim',
-          })
+          }
         })
       }
 
       if (options.userId !== decoded.sub) {
         return new AuthenticationResponse({
           status: 401,
-          body: new ErrorResponse({
-            status: 401,
+          body: {
             error: 'invalid_refresh_token',
             error_description: 'Refresh token has an invalid user id',
-          })
+          }
         })
       }
 

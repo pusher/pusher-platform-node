@@ -87,6 +87,10 @@ export default class Instance {
     return this.authenticator.authenticate(authenticatePayload, options);
   }
 
+  authenticateWithRefreshToken(authenticatePayload: AuthenticatePayload, options: AuthenticateOptions): AuthenticationResponse {
+    return this.authenticator.authenticateWithRefreshToken(authenticatePayload, options);
+  }
+
   generateAccessToken(options: AuthenticateOptions): TokenWithExpiry {
     return this.authenticator.generateAccessToken(options);
   }

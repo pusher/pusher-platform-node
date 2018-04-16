@@ -1,4 +1,4 @@
-import {IncomingMessage} from "http";
+import { IncomingMessage } from 'http';
 
 export type Headers = {
   [key: string]: string | string[];
@@ -8,18 +8,24 @@ export interface TokenResponse {
   access_token: string;
   token_type: string;
   expires_in: number;
-  refresh_token: string;
+  refresh_token?: string;
+}
+
+export interface ErrorBody {
+  error: string;
+  error_description: string;
+  error_uri?: string;
 }
 
 export class AuthenticationResponse {
   readonly status: number;
   readonly headers: Headers;
-  readonly body: TokenResponse | ErrorResponse;
+  readonly body: TokenResponse | ErrorBody;
 
   constructor(options: {
     status: number,
     headers?: Headers,
-    body: TokenResponse | ErrorResponse,
+    body: TokenResponse | ErrorBody,
   }) {
     this.status = options.status;
     this.headers = options.headers || {};

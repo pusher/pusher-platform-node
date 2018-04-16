@@ -4,6 +4,7 @@ export {
   AuthenticateOptions,
   AuthenticatePayload,
   AuthenticationResponse,
+  ErrorBody,
   ErrorResponse,
 } from './common';
 
