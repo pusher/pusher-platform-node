@@ -11,8 +11,9 @@ var pusher = new PusherPlatform.Instance({
 });
 
 var app = express();
+app.use(bodyParser.urlencoded({ extended: true }))
 
-app.post('/', bodyParser.urlencoded({ extended: true }), function (req, res) {
+app.post('/', function (req, res) {
   const authPayload = pusher.authenticate(req.body, {});
   console.log(authPayload);
   res.status(authPayload.status).send(authPayload.body);
