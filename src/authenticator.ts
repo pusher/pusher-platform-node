@@ -41,7 +41,7 @@ export default class Authenticator {
       return new AuthenticationResponse({
         status: 422,
         body: {
-          error: 'invalid_grant_type',
+          error: 'token_provider/invalid_grant_type',
           error_description: `The grant_type provided, ${grantType}, is unsupported`,
         }
       })
@@ -63,7 +63,7 @@ export default class Authenticator {
         return new AuthenticationResponse({
           status: 422,
           body: {
-            error: 'invalid_grant_type',
+            error: 'token_provider/invalid_grant_type',
             error_description: `The grant_type provided, ${grantType}, is unsupported`,
           }
         })
@@ -105,7 +105,7 @@ export default class Authenticator {
         return new AuthenticationResponse({
           status: 401,
           body: {
-            error: 'invalid_refresh_token',
+            error: 'token_provider/invalid_refresh_token',
             error_description: description,
           }
         })
@@ -115,7 +115,7 @@ export default class Authenticator {
         return new AuthenticationResponse({
           status: 401,
           body: {
-            error: 'invalid_refresh_token',
+            error: 'token_provider/invalid_refresh_token',
             error_description: 'Refresh token does not have a refresh claim',
           }
         })
@@ -125,7 +125,7 @@ export default class Authenticator {
         return new AuthenticationResponse({
           status: 401,
           body: {
-            error: 'invalid_refresh_token',
+            error: 'token_provider/invalid_refresh_token',
             error_description: 'Refresh token has an invalid user id',
           }
         })
