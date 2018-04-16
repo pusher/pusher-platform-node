@@ -23,10 +23,10 @@ It takes the following arguments:
 var pusher = require("pusher-platform-node");
 
 var pusherPlatform = new pusher.Instance({
-  locator: "",
-  serviceName: "",
-  serviceVersion: "",
-  key: "",
+  locator: '',
+  serviceName: '',
+  serviceVersion: '',
+  key: '',
 });
 ```
 
@@ -41,9 +41,31 @@ Instance objects provide an `authenticate` method, which can be used in controll
 to build authentication endpoints. Authentication endpoints issue access tokens
 used by Pusher Platform clients to access the API.
 
+Calling `authenticate` will return an object that has the following shape:
+
+```js
+{
+  access_token: 'adsasd',
+  token_type: 'bearer',
+  expires_in: 86400
+}
+```
+
+If you want to have a refresh token returned as well, then you need to call
+`authenticateWithRefreshToken`. That will return an object with the following shape:
+
+```js
+{
+  access_token: 'adsasd',
+  token_type: 'bearer',
+  expires_in: 86400,
+  refresh_token: 'cxacsac'
+}
+```
+
 Make sure you authenticate the user before issuing access tokens.
 
-- `authenticatePayload` param is essentially object of type `AuthenticatePayload`. The object must have the following format: (Please note that if you using one of our client libraries they will handle this format for you)
+- `authenticatePayload` param is essentially object of type `AuthenticatePayload`. The object must have the following format: (please note that if you using one of our client libraries they will handle this format for you)
 
 ```js
 type AuthenticatePayload {
@@ -68,17 +90,13 @@ let authOptions = {
 let authResponse = app.authenticate(authenticatePayload, authOptions);
 ```
 
-Where the authResponse is an object containing your access and refresh tokens:
+Where the authResponse is an object containing your access token (and refresh token, if you called `authenticateWithRefreshToken`):
 
 ```js
 let = authResponse: {
-  access_token: {
-    token: 'adsasd',
-    expires_id: 1000
-  },
-  token_type: 'bearer';
-  expires_in: 20000;
-  refresh_token: 'cvbccvbb'
+  access_token: 'adsasd',
+  token_type: 'bearer',
+  expires_in: 86400,
 }
 ```
 
@@ -97,16 +115,16 @@ let authOptions = {
 
 ### Request API
 
-Instance objects provide a low-level request API, which can be used to contact Pusher Platform.
+Instance objects provide a low-level request API, which can be used to contact services running on the Pusher Platform.
 
 ```js
 pusherApp.request({
   method: "POST",
-  path: "feeds/playground",
+  path: 'feeds/playground',
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
-  body: { items: ["test"] },
+  body: { items: ['test'] },
 }).then(function(response) {
   console.log(response.statusCode);
   console.log(response.headers);
@@ -128,9 +146,8 @@ pusherApp.request({
 
 ## Issues, Bugs, and Feature Requests
 
-Feel free to create an issue on Github if you find anything wrong. Please use the existing template.
+Feel free to create an issue on GitHub if you find anything wrong. Please use the existing template.
 If you wish to contribute, please make a pull request.
-To summon help you can also ping @pusher/sigsdk or @zmarkan.
 
 ## License
 
