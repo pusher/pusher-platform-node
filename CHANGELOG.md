@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning Scheme](http://semver.org)
 
 ## Unreleased
 
+## [v0.13.0] 2018-04-19
+
 ### Additions
 
 - `authenticateWithRefreshToken` has been added if you want to support the `refresh_token` grant type and return refresh tokens as part of the authentication process

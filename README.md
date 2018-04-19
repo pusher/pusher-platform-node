@@ -9,7 +9,7 @@ Add `pusher-platform-node` to your package.json file:
 ```json
 {
   "dependencies": {
-    "pusher-platform-node": "~0.12.1"
+    "pusher-platform-node": "~0.13.0"
   }
 }
 ```
