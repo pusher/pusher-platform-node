@@ -1,19 +1,19 @@
-import extend = require("extend");
-import {IncomingMessage} from "http";
-import * as jwt from "jsonwebtoken";
+import extend = require('extend');
+import { IncomingMessage } from 'http';
+import * as jwt from 'jsonwebtoken';
 
-import Authenticator, {
-  TokenWithExpiry, AuthenticationResponse
-} from "./authenticator";
-import BaseClient from "./base_client";
+import Authenticator, { TokenWithExpiry } from './authenticator';
+import BaseClient from './base_client';
 import {
   AuthenticateOptions,
-  RequestOptions,
   AuthenticatePayload,
-  IncomingMessageWithBody
-} from "./common";
+  AuthenticationResponse,
+  RequestOptions,
+  IncomingMessageWithBody,
+  ErrorResponse,
+} from './common';
 
-const HOST_BASE = "pusherplatform.io";
+const HOST_BASE = 'pusherplatform.io';
 const HTTPS_PORT = 443;
 
 export interface InstanceOptions {
@@ -58,7 +58,7 @@ export default class Instance {
 
     let keyParts = options.key.match(/^([^:]+):(.+)$/);
     if (!keyParts) {
-      throw new Error("Invalid instance key");
+      throw new Error('Invalid instance key');
     }
     this.keyId = keyParts[1];
     this.keySecret = keyParts[2];
@@ -85,6 +85,10 @@ export default class Instance {
 
   authenticate(authenticatePayload: AuthenticatePayload, options: AuthenticateOptions): AuthenticationResponse {
     return this.authenticator.authenticate(authenticatePayload, options);
+  }
+
+  authenticateWithRefreshToken(authenticatePayload: AuthenticatePayload, options: AuthenticateOptions): AuthenticationResponse {
+    return this.authenticator.authenticateWithRefreshToken(authenticatePayload, options);
   }
 
   generateAccessToken(options: AuthenticateOptions): TokenWithExpiry {

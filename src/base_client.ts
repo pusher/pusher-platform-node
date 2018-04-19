@@ -1,11 +1,11 @@
-import extend = require("extend");
-import {IncomingMessage} from "http";
-import * as https from "https";
+import extend = require('extend');
+import { IncomingMessage } from 'http';
+import * as https from 'https';
 import {
   RequestOptions, ErrorResponse, IncomingMessageWithBody
-} from "./common";
-import * as HttpRequest from "request";
-import { format as formatURL } from "url";
+} from './common';
+import * as HttpRequest from 'request';
+import { format as formatURL } from 'url';
 
 export interface BaseClientOptions {
   host: string;
@@ -44,7 +44,7 @@ export default class BaseClient {
       }
     }
     if (options.jwt) {
-      headers["Authorization"] = `Bearer ${options.jwt}`
+      headers['Authorization'] = `Bearer ${options.jwt}`
     }
 
     const path = this.sanitizePath(`services/${this.serviceName}/${this.serviceVersion}/${this.instanceId}/${options.path}`);
@@ -78,13 +78,15 @@ export default class BaseClient {
           }
           else if (statusCode >= 400 && statusCode <= 599) {
             const errJson = JSON.parse(body);
-            reject(new ErrorResponse(
-              response.statusCode,
-              response.headers,
-              errJson.error,
-              errJson.error_description,
-              errJson.error_uri,
-             ));
+            const { statusCode, headers } = response;
+            const { error, error_description, error_uri } = errJson;
+            reject(new ErrorResponse({
+              error,
+              error_description,
+              error_uri,
+              headers,
+              status: statusCode,
+            }));
           } else {
             reject(new Error(`Unsupported Response Code: ${statusCode}`));
           }

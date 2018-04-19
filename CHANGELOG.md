@@ -4,7 +4,37 @@ This project adheres to [Semantic Versioning Scheme](http://semver.org)
 
 ## Unreleased
 
-Nothing, yet.
+### Additions
+
+- `authenticateWithRefreshToken` has been added if you want to support the `refresh_token` grant type and return refresh tokens as part of the authentication process
+
+### Changes
+
+- `authenticate` no longer returns a `refresh_token` and no longer accepts the `refresh_token` grant type
+- Calls to `authenticate` and `authenticateWithRefreshToken` always return an `AuthenticationResponse` that looks like this:
+
+```js
+{
+  status: number;
+  headers: Headers;
+  body: TokenResponse | ErrorBody;
+}
+```
+
+where:
+
+* `status` is the suggested HTTP response status code,
+* `headers` are the suggested response `headers`,
+* `body` holds either the token payload or an appropriate error payload.
+
+Here is an example of the expected usage, simplified for brevity:
+
+```js
+app.post('/', function (req, res) {
+  const authPayload = pusher.authenticate(req.body, {});
+  res.status(authPayload.status).send(authPayload.body);
+});
+```
 
 ## [v0.12.1] 2018-04-05
 

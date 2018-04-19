@@ -1,12 +1,17 @@
-import {IncomingMessage} from "http";
+import { IncomingMessage } from 'http';
 import * as jwt from 'jsonwebtoken';
 
-import {AuthenticateOptions, AuthenticatePayload} from "./common";
-import {UnsupportedGrantTypeError, InvalidGrantTypeError} from "./errors";
+import {
+  AuthenticateOptions,
+  AuthenticatePayload,
+  AuthenticationResponse,
+  ErrorBody,
+  TokenResponse,
+} from './common';
 
 const DEFAULT_TOKEN_EXPIRY = 24*60*60;
-const CLIENT_CREDENTIALS_GRANT_TYPE = "client_credentials";
-const REFRESH_TOKEN_GRANT_TYPE = "refresh_token";
+const CLIENT_CREDENTIALS_GRANT_TYPE = 'client_credentials';
+const REFRESH_TOKEN_GRANT_TYPE = 'refresh_token';
 
 export interface TokenWithExpiry {
   token: string;
@@ -17,53 +22,76 @@ export interface RefreshToken {
   token: string;
 }
 
-export interface AuthenticationResponse {
-  access_token: string | TokenWithExpiry;
-  token_type: string;
-  expires_in: number;
-  refresh_token: string;
-}
-
 export default class Authenticator {
   constructor(
     private instanceId: string,
     private instanceKeyId: string,
     private instanceKeySecret: string,
 
-    //Customise token expiry
+    // Customise token expiry
     private tokenExpiry?: number,
   ) {
     if(!this.tokenExpiry) { this.tokenExpiry = DEFAULT_TOKEN_EXPIRY; }
   }
 
   authenticate(authenticatePayload: AuthenticatePayload, options: AuthenticateOptions): AuthenticationResponse {
-    let grantType = authenticatePayload["grant_type"];
+    let grantType = authenticatePayload['grant_type'];
+
+    if (grantType !== CLIENT_CREDENTIALS_GRANT_TYPE) {
+      return new AuthenticationResponse({
+        status: 422,
+        body: {
+          error: 'token_provider/invalid_grant_type',
+          error_description: `The grant_type provided, ${grantType}, is unsupported`,
+        }
+      })
+    }
+
+    return this.authenticateUsingClientCredentials(options);
+  }
+
+  authenticateWithRefreshToken(authenticatePayload: AuthenticatePayload, options: AuthenticateOptions): AuthenticationResponse {
+    let grantType = authenticatePayload['grant_type'];
 
     switch (grantType) {
       case CLIENT_CREDENTIALS_GRANT_TYPE:
-        return this.authenticateWithClientCredentials(options);
+        return this.authenticateUsingClientCredentials(options, true);
       case REFRESH_TOKEN_GRANT_TYPE:
         let oldRefreshToken = authenticatePayload[REFRESH_TOKEN_GRANT_TYPE];
-        return this.authenticateWithRefreshToken(oldRefreshToken, options);
+        return this.authenticateUsingRefreshToken(oldRefreshToken, options);
       default:
-        throw new UnsupportedGrantTypeError(`Requested type: "${grantType}" is not supported`);
+        return new AuthenticationResponse({
+          status: 422,
+          body: {
+            error: 'token_provider/invalid_grant_type',
+            error_description: `The grant_type provided, ${grantType}, is unsupported`,
+          }
+        })
     }
   }
 
-  private authenticateWithClientCredentials(options: AuthenticateOptions): AuthenticationResponse {
-    let {token} = this.generateAccessToken(options);
-    let refreshToken = this.generateRefreshToken(options);
+  private authenticateUsingClientCredentials(options: AuthenticateOptions, withRefreshToken = false): AuthenticationResponse {
+    let { token } = this.generateAccessToken(options);
     let tokenExpiry = options.tokenExpiry || this.tokenExpiry;
 
-    return {
+    let body: TokenResponse = {
       access_token: token,
-      token_type: "bearer",
       expires_in: tokenExpiry,
-      refresh_token: refreshToken.token,
-    };
+      token_type: 'bearer',
+    }
+
+    if (withRefreshToken) {
+      let refreshToken = this.generateRefreshToken(options);
+      body['refresh_token'] = refreshToken.token;
+    }
+
+    return new AuthenticationResponse({
+      status: 200,
+      body
+    })
   }
 
-  private authenticateWithRefreshToken(oldRefreshToken: string, options: AuthenticateOptions): AuthenticationResponse {
+  private authenticateUsingRefreshToken(oldRefreshToken: string, options: AuthenticateOptions): AuthenticationResponse {
       let decoded: any;
       let tokenExpiry = options.tokenExpiry || this.tokenExpiry;
 
@@ -72,27 +100,49 @@ export default class Authenticator {
           issuer: `api_keys/${this.instanceKeyId}`,
         });
       } catch (e) {
-        let description: string = (e instanceof jwt.TokenExpiredError) ? "refresh token has expired" : "refresh token is invalid";
-        throw new InvalidGrantTypeError(description);
+        let description: string = (e instanceof jwt.TokenExpiredError) ? 'Refresh token has expired' : 'Refresh token is invalid';
+
+        return new AuthenticationResponse({
+          status: 401,
+          body: {
+            error: 'token_provider/invalid_refresh_token',
+            error_description: description,
+          }
+        })
       }
 
       if (decoded.refresh !== true) {
-        throw new InvalidGrantTypeError("refresh token does not have a refresh claim");
+        return new AuthenticationResponse({
+          status: 401,
+          body: {
+            error: 'token_provider/invalid_refresh_token',
+            error_description: 'Refresh token does not have a refresh claim',
+          }
+        })
       }
 
       if (options.userId !== decoded.sub) {
-        throw new InvalidGrantTypeError("refresh token has an invalid user id");
+        return new AuthenticationResponse({
+          status: 401,
+          body: {
+            error: 'token_provider/invalid_refresh_token',
+            error_description: 'Refresh token has an invalid user id',
+          }
+        })
       }
 
       let newAccessToken = this.generateAccessToken(options);
       let newRefreshToken = this.generateRefreshToken(options);
 
-      return {
-        access_token: newAccessToken,
-        token_type: "bearer",
-        expires_in: tokenExpiry,
-        refresh_token: newRefreshToken.token,
-      };
+      return new AuthenticationResponse({
+        status: 200,
+        body: {
+          access_token: newAccessToken.token,
+          token_type: 'bearer',
+          expires_in: tokenExpiry,
+          refresh_token: newRefreshToken.token,
+        }
+      });
   }
 
   generateAccessToken(options: AuthenticateOptions): TokenWithExpiry {
