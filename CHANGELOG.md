@@ -1,10 +1,12 @@
-# Change Log
+# Changelog
+All notable changes to this project will be documented in this file.
 
-This project adheres to [Semantic Versioning Scheme](http://semver.org)
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [Unreleased](https://github.com/pusher/pusher-platform-node/compare/0.13.0...HEAD)
 
-## [v0.13.0] 2018-04-19
+## [0.13.0](https://github.com/pusher/pusher-platform-node/compare/0.12.1...0.13.0) - 2018-04-19
 
 ### Additions
 
@@ -38,77 +40,77 @@ app.post('/', function (req, res) {
 });
 ```
 
-## [v0.12.1] 2018-04-05
+## [0.12.1](https://github.com/pusher/pusher-platform-node/compare/0.12.0...0.12.1) - 2018-04-05
 
 ### Fixes
 
 - Issuer check in refresh token validation now checks that the issuer starts with `api_keys/`, not `keys/`
 
-## [v0.12.0] 2018-03-29
+## [0.12.0](https://github.com/pusher/pusher-platform-node/compare/0.11.1...0.12.0) - 2018-03-29
 
 ### Changes
 
 - `grant_type` is now required in `AuthenticatePayload`
 - `AuthenticatePayload` is now exported from `index.js`
 
-## [v0.11.1] 2018-01-26
+## [0.11.1](https://github.com/pusher/pusher-platform-node/compare/0.11.0...0.11.1) - 2018-01-26
 
 ### Changes
 
 - Tokens now use `instance` claim instead of `app` claim
 
-## [v0.11.0] 2018-01-26
+## [0.11.0](https://github.com/pusher/pusher-platform-node/compare/0.10.0...0.11.0) - 2018-01-26
 
 ### Changes
 
 - Added support for custom token expiry with a `tokenExpiry` key in `AuthenticateOptions`
 - Removed all mention of `tokenLeeway`
 
-## [v0.10.0] 2017-10-27
+## [0.10.0](https://github.com/pusher/pusher-platform-node/compare/0.9.0...0.10.0) - 2017-10-27
 
 ### Changes
 
 - When instantiating an `Instance` you now provide a `locator` instead of an `instanceId`
 
-## [v0.9.0] 2017-09-20
+## [0.9.0](https://github.com/pusher/pusher-platform-node/compare/0.8.3...0.9.0) - 2017-09-20
 
 ### Changes
 
 - Error responses now provide more information
 
-## [v0.8.3] 2017-08-29
+## [0.8.3](https://github.com/pusher/pusher-platform-node/compare/0.8.2...0.8.3) - 2017-08-29
 
 ### Changes
 
 - Corrected the error when instantiating the library - it now says it requires `instanceId` instead of `instance` field
 
-## [v0.8.2] 2017-08-04
+## [0.8.2](https://github.com/pusher/pusher-platform-node/compare/0.8.1...0.8.2) - 2017-08-04
 
 ### Changes
 
 - Added support for query params in `RequestOptions` (pass in an object undert the `qs` key)
 
-## [v0.8.1] 2017-08-02
+## [0.8.1](https://github.com/pusher/pusher-platform-node/compare/0.3.0...0.8.1) - 2017-08-02
 
 ### Changes
 
 - Move path sanitization logic all to the `BaseClient`
 - `TokenWithExpiry` is now an exported interface.
 
-## [v0.8.0] 2017-07-19
+## [0.8.0](https://github.com/pusher/pusher-platform-node/compare/0.7.1...0.8.0) - 2017-07-19
 
 ### Changes
 
 - Renamed the `instance` to `instanceId` when instantiating an `Instance`
 - `Instance` class now has a parameter `id` that used to be `instance`
 
-## [v0.7.1] 2017-07-18
+## [0.7.1](https://github.com/pusher/pusher-platform-node/compare/0.7.0...0.7.1) - 2017-07-18
 
 ### Changes
 
 - Requests now return a body as well
 
-## [v0.7.0] 2017-07-17
+## [0.7.0](https://github.com/pusher/pusher-platform-node/compare/0.6.1...0.7.0) - 2017-07-17
 
 ### Fixes
 
@@ -120,13 +122,13 @@ app.post('/', function (req, res) {
 - Allow `Authenticator` to take in custom `tokenExpiry` and `tokenLeeway` - for SuperUser requests
 - Rename exported `TOKEN_EXPIRY` to `DEFAULT_TOKEN_EXPIRY`
 
-## [v0.6.1] 2017-07-11
+## [0.6.1](https://github.com/pusher/pusher-platform-node/compare/0.6.0...0.6.1) - 2017-07-11
 
 ### Changes
 
 - Service claims are now optional
 
-## [v0.6.0] 2017-07-10
+## [0.6.0](https://github.com/pusher/pusher-platform-node/compare/0.5.0...0.6.0) - 2017-07-10
 
 ### Changes
 
