@@ -6,12 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased](https://github.com/pusher/pusher-platform-node/compare/0.13.1...HEAD)
 
-## [0.13.1](https://github.com/pusher/pusher-platform-node/compare/0.13.1...0.13.0) - 2018-08-15
+## [0.13.1](https://github.com/pusher/pusher-platform-node/compare/0.13.0...0.13.1) - 2018-08-16
 
 ### Additions
 
-- `RequestOption` now exposes a `useQuerystring` attribute that can be used to specify if
-  `query-string` library should be used to parse query string.
+- `RequestOption` now exposes a `useQuerystring` attribute that can be used to specify if `query-string` library should be used to parse query string
 
 ## [0.13.0](https://github.com/pusher/pusher-platform-node/compare/0.12.1...0.13.0) - 2018-04-19
 
