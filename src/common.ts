@@ -62,6 +62,7 @@ export interface RequestOptions {
   headers?: Headers;
   body?: any;
   qs?: object;
+  useQuerystring: boolean;
 }
 
 export interface AuthenticateOptions {

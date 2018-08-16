@@ -61,7 +61,8 @@ export default class BaseClient {
         body: JSON.stringify(options.body),
         headers: headers,
         method: options.method,
-        qs: options.qs
+        qs: options.qs,
+        useQuerystring: options.useQuerystring
       }, (error, response, body) => {
         if(error) {
           reject(error);
