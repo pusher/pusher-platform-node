@@ -4,13 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/pusher/pusher-platform-node/compare/0.13.1...HEAD)
+## [Unreleased](https://github.com/pusher/pusher-platform-node/compare/0.13.2...HEAD)
 
-## [0.13.1](https://github.com/pusher/pusher-platform-node/compare/0.13.0...0.13.1) - 2018-08-16
+## [0.13.2](https://github.com/pusher/pusher-platform-node/compare/0.13.1...0.13.2) - 2018-08-17
 
 ### Additions
 
 - `RequestOption` now exposes a `useQuerystring` attribute that can be used to specify if `query-string` library should be used to parse query string
+
+## [0.13.1](https://github.com/pusher/pusher-platform-node/compare/0.13.0...0.13.1) - 2018-07-25
+
+### Changes
+
+- Bump verion of `jsonwebtoken`
 
 ## [0.13.0](https://github.com/pusher/pusher-platform-node/compare/0.12.1...0.13.0) - 2018-04-19
 
