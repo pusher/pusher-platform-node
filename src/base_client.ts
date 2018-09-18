@@ -1,11 +1,12 @@
 import extend = require('extend');
 import { IncomingMessage } from 'http';
 import * as https from 'https';
+import * as HttpRequest from 'request';
+import { format as formatURL } from 'url';
 import {
   RequestOptions, ErrorResponse, IncomingMessageWithBody
 } from './common';
-import * as HttpRequest from 'request';
-import { format as formatURL } from 'url';
+import SDKInfo from './sdk_info';
 
 export interface BaseClientOptions {
   host: string;
@@ -13,6 +14,7 @@ export interface BaseClientOptions {
   serviceName: string;
   serviceVersion: string;
   instanceId: string;
+  sdkInfo: SDKInfo;
 }
 
 export default class BaseClient {
@@ -21,6 +23,7 @@ export default class BaseClient {
   private serviceName: string;
   private serviceVersion: string;
   private instanceId: string;
+  private sdkInfo: SDKInfo;
 
   constructor(options?: BaseClientOptions) {
     this.host = options.host;
@@ -28,6 +31,7 @@ export default class BaseClient {
     this.serviceName = options.serviceName;
     this.serviceVersion = options.serviceVersion;
     this.instanceId = options.instanceId;
+    this.sdkInfo = options.sdkInfo;
   }
 
   /**
@@ -36,7 +40,7 @@ export default class BaseClient {
    * and instanceId that were passed to the Instance at construction time.
    */
   request(options: RequestOptions): Promise<IncomingMessageWithBody> {
-    var headers: any = {};
+    var headers: any = this.sdkInfo.headers;
 
     if (options.headers) {
       for (var key in options.headers) {

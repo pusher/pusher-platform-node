@@ -4,6 +4,7 @@ import * as jwt from 'jsonwebtoken';
 
 import Authenticator, { TokenWithExpiry } from './authenticator';
 import BaseClient from './base_client';
+import SDKInfo from './sdk_info';
 import {
   AuthenticateOptions,
   AuthenticatePayload,
@@ -25,6 +26,7 @@ export interface InstanceOptions {
   port?: number;
   host?: string;
   client?: BaseClient;
+  sdkInfo?: SDKInfo;
 }
 
 export default class Instance {
@@ -42,10 +44,11 @@ export default class Instance {
   private authenticator: Authenticator;
 
   constructor(options: InstanceOptions) {
-    if (!options.locator) throw new Error('Expected `instanceLocator` property in Instance options!');
-    if (options.locator.split(":").length !== 3) throw new Error('The `locator` property is in the wrong format!');
-    if(!options.serviceName) throw new Error('Expected `serviceName` property in Instance options!');
-    if(!options.serviceVersion) throw new Error('Expected `serviceVersion` property in Instance otpions!');
+    if (!options.locator) { throw new Error('Expected `instanceLocator` property in Instance options'); }
+    if (options.locator.split(":").length !== 3) { throw new Error('The `locator` property is in the wrong format'); }
+    if (!options.serviceName) { throw new Error('Expected `serviceName` property in Instance options'); }
+    if (!options.serviceVersion) { throw new Error('Expected `serviceVersion` property in Instance otpions'); }
+    if (!options.client && !options.sdkInfo) { throw new Error('Expected one of `client` or `sdkInfo` to be provided') }
 
     let splitInstance = options.locator.split(":");
     this.platformVersion = splitInstance[0];
@@ -67,7 +70,8 @@ export default class Instance {
       instanceId: this.id,
       serviceName: this.serviceName,
       serviceVersion: this.serviceVersion,
-      port: options.port || HTTPS_PORT
+      port: options.port || HTTPS_PORT,
+      sdkInfo: options.sdkInfo,
     });
 
     this.authenticator = new Authenticator(

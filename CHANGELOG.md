@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changes
 
+- *Breaking*: An instance of `SDKInfo` is now required when instantiating an instance of `BaseClient`. This can either be directly provided to the `BaseClient` and then the base client provided to an instance of `Instance` in the `client` key or the `options` object that `Instance`s initializer takes, or you can provide the `SDKInfo` instance to the `Instance` initializer in the `sdkInfo` key of its `options` parameter
 - Removed defaulting to generating a JWT with the `su: true` claim if no JWT is provided to a call to `request`
 
 ## [0.13.2](https://github.com/pusher/pusher-platform-node/compare/0.13.1...0.13.2) - 2018-08-17
