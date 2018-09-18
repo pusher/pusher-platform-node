@@ -42,7 +42,6 @@ export default class Instance {
   private authenticator: Authenticator;
 
   constructor(options: InstanceOptions) {
-
     if (!options.locator) throw new Error('Expected `instanceLocator` property in Instance options!');
     if (options.locator.split(":").length !== 3) throw new Error('The `locator` property is in the wrong format!');
     if(!options.serviceName) throw new Error('Expected `serviceName` property in Instance options!');
@@ -77,9 +76,6 @@ export default class Instance {
   }
 
   request(options: RequestOptions): Promise<IncomingMessageWithBody> {
-    if (options.jwt == null) {
-      options = extend(options, { jwt: `${this.authenticator.generateAccessToken({ su: true }).token}` });
-    }
     return this.client.request(options);
   }
 

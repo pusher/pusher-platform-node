@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased](https://github.com/pusher/pusher-platform-node/compare/0.13.2...HEAD)
 
+### Changes
+
+- Removed defaulting to generating a JWT with the `su: true` claim if no JWT is provided to a call to `request`
+
 ## [0.13.2](https://github.com/pusher/pusher-platform-node/compare/0.13.1...0.13.2) - 2018-08-17
 
 ### Additions
