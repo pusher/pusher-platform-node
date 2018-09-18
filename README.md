@@ -20,18 +20,23 @@ In order to access Pusher Platform, first instantiate an Instance object.
 It takes the following arguments:
 
 ```js
-var pusher = require("pusher-platform-node");
+var PusherPlatform = require("pusher-platform-node");
 
-var pusherPlatform = new pusher.Instance({
+var pusherPlatform = new PusherPlatform.Instance({
   locator: '',
   serviceName: '',
   serviceVersion: '',
   key: '',
+  sdkInfo: new PusherPlatform.SDKInfo({
+    productName: '',
+    version: '',
+  }),
 });
 ```
 
-`locator` is unique to an app developers' instance - they get that from the dashboard. The service SDKs will need to relay that down. Same for the `key`.
-`serviceName` and `serviceVersion` should come from the service SDK itself. They can be hardcoded there. Think `feeds` and `v1`.
+* `locator` is unique to an app developers' instance - they get that from the dashboard. The service SDKs will need to relay that down. Same for the `key`.
+* `serviceName` and `serviceVersion` should come from the service SDK itself. They can be hardcoded there. Think `feeds` and `v1`.
+* `sdkInfo` is used to provide product and SDK version information, via headers, to the platform
 
 It is also possible to specify `host` and `port`. This will override the cluster value that is encoded in the `instance` and allow you to connect to a development or testing server.
 
