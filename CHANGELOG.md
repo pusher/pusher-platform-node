@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/pusher/pusher-platform-node/compare/0.14.0...HEAD)
+## [Unreleased](https://github.com/pusher/pusher-platform-node/compare/0.15.0...HEAD)
+
+## [0.15.0](https://github.com/pusher/pusher-platform-node/compare/0.14.0...0.15.0) - 2018-10-31
+
+### Changes
+
+- `useQueryString` is now an optional property of `RequestOptions` and defaults to false
+- The npm package has been tidied up to only include what is required
+- Removed body-parser as a dependency as it's not required
 
 ## [0.14.0](https://github.com/pusher/pusher-platform-node/compare/0.13.2...0.14.0) - 2018-09-18
 
