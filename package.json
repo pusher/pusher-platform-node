@@ -1,8 +1,8 @@
 {
   "name": "pusher-platform-node",
   "version": "0.14.0",
-  "main": "./target/index.js",
-  "types": "./target/index.d.ts",
+  "main": "target/index.js",
+  "types": "target/index.d.ts",
   "dependencies": {
     "body-parser": "^1.17.2",
     "extend": "^2.0.1",
