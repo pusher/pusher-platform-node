@@ -6,7 +6,7 @@
   "dependencies": {
     "extend": "^2.0.1",
     "jsonwebtoken": "^8.3.0",
-    "request": "^2.81.0"
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "@types/es6-promise": "0.0.32",
