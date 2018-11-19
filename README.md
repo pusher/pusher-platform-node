@@ -4,12 +4,12 @@ Pusher Platform SDK for Node.js.
 
 ## Installation
 
-Add `pusher-platform-node` to your package.json file:
+Add `@pusher/platform-node` to your package.json file:
 
 ```json
 {
   "dependencies": {
-    "pusher-platform-node": "~0.15.0"
+    "@pusher/platform-node": "~0.15.0"
   }
 }
 ```
@@ -20,7 +20,7 @@ In order to access Pusher Platform, first instantiate an Instance object.
 It takes the following arguments:
 
 ```js
-var PusherPlatform = require("pusher-platform-node");
+var PusherPlatform = require("@pusher/platform-node");
 
 var pusherPlatform = new PusherPlatform.Instance({
   locator: '',
