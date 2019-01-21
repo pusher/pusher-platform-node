@@ -1,4 +1,3 @@
-import extend = require('extend');
 import { IncomingMessage } from 'http';
 import * as https from 'https';
 import * as HttpRequest from 'request';
@@ -75,7 +74,7 @@ export default class BaseClient {
           let statusCode = response.statusCode;
 
           if(statusCode >= 200 && statusCode <= 299) {
-            response = extend(response, { body });
+            response.body = body;
             resolve(response);
           }
           else if (statusCode >= 300 && statusCode <= 399) {
