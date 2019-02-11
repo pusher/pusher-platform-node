@@ -4,7 +4,7 @@
   "main": "target/index.js",
   "types": "target/index.d.ts",
   "dependencies": {
-    "extend": "^2.0.1",
+    "extend": "^2.0.2",
     "jsonwebtoken": "^8.3.0",
     "request": "^2.88.0"
   },
