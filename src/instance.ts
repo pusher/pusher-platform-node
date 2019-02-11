@@ -1,4 +1,3 @@
-import extend = require('extend');
 import { IncomingMessage } from 'http';
 import * as jwt from 'jsonwebtoken';
 
