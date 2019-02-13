@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased](https://github.com/pusher/pusher-platform-node/compare/0.15.3...HEAD)
 
+- Set connection keep-alive to forever.
+
 ## [0.15.3](https://github.com/pusher/pusher-platform-node/compare/0.15.2...0.15.3)
 
 - Remove unnecessary use of extend package
