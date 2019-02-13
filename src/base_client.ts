@@ -65,7 +65,8 @@ export default class BaseClient {
         headers: headers,
         method: options.method,
         qs: options.qs,
-        useQuerystring: options.useQuerystring || false
+        useQuerystring: options.useQuerystring || false,
+        forever: true
       }, (error, response, body) => {
         if(error) {
           reject(error);
