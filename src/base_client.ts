@@ -82,8 +82,18 @@ export default class BaseClient {
             reject(new Error(`Unsupported Redirect Response: ${statusCode}`));
           }
           else if (statusCode >= 400 && statusCode <= 599) {
-            const errJson = JSON.parse(body);
             const { statusCode, headers } = response;
+
+            let errJson;
+            try {
+              errJson = JSON.parse(body);
+            } catch (_) {
+              return reject(new ErrorResponse({
+                error: 'Something went wrong, but could not parse the response',
+                error_description: '',
+                status: statusCode
+              }));
+            }
             const { error, error_description, error_uri } = errJson;
             reject(new ErrorResponse({
               error,
